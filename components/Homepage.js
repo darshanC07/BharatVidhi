@@ -47,9 +47,14 @@ export default function Homepage() {
                     </View>
                 </View>
                 <View style={{
-                    height: 100,
-                    backgroundColor: 'grey'
-                }}></View>
+                    height: 120,
+                    backgroundColor: 'grey',
+                    borderTopLeftRadius:30,
+                    borderBottomRightRadius:30,
+                    borderBottomLeftRadius:50
+                }}>
+                    <Image source={require('../assets/Owl.png')} style={styles.owl}/>
+                </View>
 
                 <View>
                     <Text style={{
@@ -57,8 +62,8 @@ export default function Homepage() {
                     }}>Sections</Text>
                 </View>
                 <ScrollView style={{
-                    height:540
-                }}>
+                    height:520
+                }} showsVerticalScrollIndicator={false}>
                     <View style={{
                         backgroundColor: 'lightblue',
                         height: 120,
@@ -97,16 +102,6 @@ export default function Homepage() {
 
                 </ScrollView>
 
-                {/* <View>
-                    <Text>Hello</Text>
-                </View> */}
-                {/* <View style={{
-                    flex:1,
-                    justifyContent:'flex-end'
-                }}>
-                    <Text>Footer</Text>
-                </View> */}
-
             </View>
             <Footer></Footer>
         </View>
@@ -115,9 +110,10 @@ export default function Homepage() {
 
 const styles = StyleSheet.create({
     container: {
-        // flex: 1,
-        backgroundColor: 'white',
-        // alignItems: "center",
-        // justifyContent: "center"
     },
+    owl:{
+        // position:'relative',
+        top:40,
+        // right:5
+    }
 });

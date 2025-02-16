@@ -1,4 +1,5 @@
 import { StyleSheet, Text, SafeAreaView, View, Alert, Image, ScrollView, Button, Platform, StatusBar } from 'react-native';
+import Footer from './Footer';
 
 export default function Homepage() {
     let lineNumbers = 3;
@@ -8,23 +9,26 @@ export default function Homepage() {
     }
     return (
         <View style={{
-            marginTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-            paddingRight:20,
-            paddingLeft:20
+            flex: 1
         }}>
+            <View style={{
+                marginTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+                paddingRight: 20,
+                paddingLeft: 20
+            }}>
 
-            {/* <StatusBar/> */}
+                {/* <StatusBar/> */}
 
                 <View style={{
                     // backgroundColor: "lightblue",
                     // marginTop: 40,
-                    height:60,
+                    height: 60,
                     paddingTop: 10,
                     paddingBottom: 10,
                     // flex: 1,
                     // justifyContent: "space-around",
                     flexDirection: "row"
-                    }}>
+                }}>
                     <Text style={{
                         fontSize: 25,
                         flex: 2,
@@ -36,60 +40,63 @@ export default function Homepage() {
                         justifyContent: 'space-around',
                         flexDirection: "row",
                         alignSelf: "stretch"
-                        }}>
+                    }}>
                         <Image source={require('../assets/notification.png')} />
                         <Image source={require('../assets/coins.png')} />
                         <Image source={require('../assets/profile.png')} />
                     </View>
                 </View>
                 <View style={{
-                    height:100,
-                    backgroundColor:'grey'
+                    height: 100,
+                    backgroundColor: 'grey'
                 }}></View>
-                
+
                 <View>
                     <Text style={{
-                        fontSize:20
+                        fontSize: 20
                     }}>Sections</Text>
-                    <ScrollView >
-                        <View style={{
-                            backgroundColor:'lightblue',
-                            height:120,
-                            marginBottom:10
-                        }}></View>
-                        <View style={{
-                            backgroundColor:'lightblue',
-                            height:120,
-                            marginBottom:10
-                        }}></View>
-                        <View style={{
-                            backgroundColor:'lightblue',
-                            height:120,
-                            marginBottom:10
-                        }}></View>
-                        <View style={{
-                            backgroundColor:'lightblue',
-                            height:120,
-                            marginBottom:10
-                        }}></View>
-                        {/* <View style={{
-                            backgroundColor:'lightblue',
-                            height:120,
-                            marginBottom:10
-                        }}></View>
-                        <View style={{
-                            backgroundColor:'lightblue',
-                            height:120,
-                            marginBottom:10
-                        }}></View>
-                        <View style={{
-                            backgroundColor:'lightblue',
-                            height:120,
-                            marginBottom:10
-                        }}></View> */}
-                        
-                    </ScrollView>
                 </View>
+                <ScrollView style={{
+                    height:540
+                }}>
+                    <View style={{
+                        backgroundColor: 'lightblue',
+                        height: 120,
+                        marginBottom: 10
+                    }}></View>
+                    <View style={{
+                        backgroundColor: 'lightblue',
+                        height: 120,
+                        marginBottom: 10
+                    }}></View>
+                    <View style={{
+                        backgroundColor: 'lightblue',
+                        height: 120,
+                        marginBottom: 10
+                    }}></View>
+                    <View style={{
+                        backgroundColor: 'lightblue',
+                        height: 120,
+                        marginBottom: 10
+                    }}></View>
+                    <View style={{
+                        backgroundColor: 'lightblue',
+                        height: 120,
+                        marginBottom: 10
+                    }}></View>
+                    <View style={{
+                        backgroundColor: 'lightblue',
+                        height: 120,
+                        marginBottom: 10
+                    }}></View>
+                    <View style={{
+                        backgroundColor: 'lightblue',
+                        height: 120,
+                        marginBottom: 10
+                    }}></View>
+
+                </ScrollView>
+
                 {/* <View>
                     <Text>Hello</Text>
                 </View> */}
@@ -99,6 +106,9 @@ export default function Homepage() {
                 }}>
                     <Text>Footer</Text>
                 </View> */}
+
+            </View>
+            <Footer></Footer>
         </View>
     );
 }

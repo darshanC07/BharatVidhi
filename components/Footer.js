@@ -9,30 +9,38 @@ export default function Footer() {
         icon4:false,
         icon5:false
     }
-    const [tabBar,setTabBar] = useState(defaultState)
-
+    let homeSelected = defaultState
+    homeSelected.icon3 = true
+    const [tabBar,setTabBar] = useState({
+        icon1:false,
+        icon2:false,
+        icon3:true,
+        icon4:false,
+        icon5:false
+    })
 
     function handlePress(i){
         let temp = defaultState
+        temp.icon3 = false
         let icon = "icon"+i
         temp[icon] = true
         setTabBar(temp)
-        // console.log(tabBar)
+        console.log(tabBar)
     }
     return (
         <View style={{
             // flex: 1,
             flexDirection: 'row',
             justifyContent: 'space-between',
-            height: 65,
+            height: 60,
             backgroundColor: 'lightblue',
             position: 'absolute',
             bottom: 0,
             // top:0,
             left: 0,
             right: 0,
-            paddingLeft: 10,
-            paddingRight: 10,
+            paddingLeft: 20,
+            paddingRight: 20,
         }}>
             <TouchableWithoutFeedback onPress={()=>{handlePress(1)}} >
                 <View style={tabBar.icon1? styles.onClickStyle:styles.highLightEffect}>
@@ -64,10 +72,9 @@ export default function Footer() {
 
 let styles = StyleSheet.create({
     highLightEffect: {
-        height: 70,
+        height: 60,
         backgroundColor: 'lightblue',
         paddingTop: 5,
-        width: 70,
         alignContent: 'center',
         alignItems: 'center',
     },

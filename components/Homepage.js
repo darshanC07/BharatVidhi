@@ -114,6 +114,8 @@ const styles = StyleSheet.create({
     owl:{
         // position:'relative',
         top:40,
-        // right:5
+        height:80,
+        width:80,
+        
     }
 });

@@ -3,26 +3,26 @@ import { Text, View, Image, StyleSheet, TouchableHighlight, TouchableWithoutFeed
 
 export default function Footer() {
     let defaultState = {
-        icon1:false,
-        icon2:false,
-        icon3:false,
-        icon4:false,
-        icon5:false
+        icon1: false,
+        icon2: false,
+        icon3: false,
+        icon4: false,
+        icon5: false
     }
     let homeSelected = defaultState
     homeSelected.icon3 = true
-    const [tabBar,setTabBar] = useState({
-        icon1:false,
-        icon2:false,
-        icon3:true,
-        icon4:false,
-        icon5:false
+    const [tabBar, setTabBar] = useState({
+        icon1: false,
+        icon2: false,
+        icon3: true,
+        icon4: false,
+        icon5: false
     })
 
-    function handlePress(i){
+    function handlePress(i) {
         let temp = defaultState
         temp.icon3 = false
-        let icon = "icon"+i
+        let icon = "icon" + i
         temp[icon] = true
         setTabBar(temp)
         console.log(tabBar)
@@ -42,27 +42,27 @@ export default function Footer() {
             paddingLeft: 20,
             paddingRight: 20,
         }}>
-            <TouchableWithoutFeedback onPress={()=>{handlePress(1)}} >
-                <View style={tabBar.icon1? styles.onClickStyle:styles.highLightEffect}>
-                    <Image source={require('../assets/icon1.png')} />
+            <TouchableWithoutFeedback onPress={() => { handlePress(1) }} >
+                <View style={tabBar.icon1 ? styles.onClickStyle : styles.highLightEffect}>
+                    <Image source={require('../assets/icon1.png')} style={styles.imageSize}/>
                 </View>
             </TouchableWithoutFeedback>
-            <TouchableWithoutFeedback onPress={()=>{handlePress(2)}} >
-            <View style={tabBar.icon2? styles.onClickStyle:styles.highLightEffect}>
-                <Image source={require('../assets/icon2.png')} />
-            </View></TouchableWithoutFeedback>
-            <TouchableWithoutFeedback onPress={()=>{handlePress(3)}} >
-            <View style={tabBar.icon3? styles.onClickStyle:styles.highLightEffect}>
-                <Image source={require('../assets/icon3.png')} />
-            </View></TouchableWithoutFeedback>
-            <TouchableWithoutFeedback onPress={()=>{handlePress(4)}} >
-            <View style={tabBar.icon4? styles.onClickStyle:styles.highLightEffect}>
-                <Image source={require('../assets/icon4.png')} />
-            </View></TouchableWithoutFeedback>
-            <TouchableWithoutFeedback onPress={()=>{handlePress(5)}} >
-            <View style={tabBar.icon5? styles.onClickStyle:styles.highLightEffect}>
-                <Image source={require('../assets/icon5.png')} />
-            </View></TouchableWithoutFeedback>
+            <TouchableWithoutFeedback onPress={() => { handlePress(2) }} >
+                <View style={tabBar.icon2 ? styles.onClickStyle : styles.highLightEffect}>
+                    <Image source={require('../assets/icon2.png')} style={styles.imageSize} />
+                </View></TouchableWithoutFeedback>
+            <TouchableWithoutFeedback onPress={() => { handlePress(3) }} >
+                <View style={tabBar.icon3 ? styles.onClickStyle : styles.highLightEffect}>
+                    <Image source={require('../assets/icon3.png')} style={styles.imageSize}/>
+                </View></TouchableWithoutFeedback>
+            <TouchableWithoutFeedback onPress={() => { handlePress(4) }} >
+                <View style={tabBar.icon4 ? styles.onClickStyle : styles.highLightEffect}>
+                    <Image source={require('../assets/icon4.png')} style={styles.imageSize}/>
+                </View></TouchableWithoutFeedback>
+            <TouchableWithoutFeedback onPress={() => { handlePress(5) }} >
+                <View style={tabBar.icon5 ? styles.onClickStyle : styles.highLightEffect}>
+                    <Image source={require('../assets/icon5.png')} style={styles.imageSize}/>
+                </View></TouchableWithoutFeedback>
 
 
         </View>
@@ -85,5 +85,9 @@ let styles = StyleSheet.create({
         borderTopLeftRadius: '50%',
         borderTopRightRadius: '50%',
         backgroundColor: 'lightblue',
+    },
+    imageSize: {
+        height: 52,
+        width: 52
     }
 })

@@ -1,31 +1,42 @@
 // import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
-import { StyleSheet, Text, View, Image, TextInput, KeyboardAvoidingView, ScrollView, TouchableWithoutFeedback, Platform, StatusBar , Dimensions} from 'react-native';
+import { StyleSheet, Text, View, Image, TextInput, KeyboardAvoidingView, ScrollView, TouchableWithoutFeedback, Platform, StatusBar , Dimensions, Alert} from 'react-native';
 
 export default function App() {
-  const [email, setEmail] = useState('')
-  const [name, setName] = useState('')
-  const [password, setPassword] = useState('')
-  const [confirmPassword, setComfirmPassword] = useState('')
+  const [email, setEmail] = useState(undefined)
+  const [name, setName] = useState(undefined)
+  const [password, setPassword] = useState(undefined)
+  const [confirmPassword, setComfirmPassword] = useState(undefined)
 
-  const [userResp, setUserResp] = useState("Proceed")
   async function handleProceed() {
     console.log('name = ', name)
     console.log('email = ', email)
     console.log('password = ', password)
-    let response = await fetch("https://9tj0pwqw-5000.inc1.devtunnels.ms/signup", {
-      method: "POST",
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        firstname: name,
-        email: email,
-        password: password
-      })
-    })
-    let data = await response.json()
-    setUserResp(data)
-    // data = await response.json()
-    console.warn(data)
+    let response,data, userCreatedData
+    if(email==undefined || name==undefined || password==undefined || confirmPassword==undefined){
+      Alert.alert("ahh haa, not possible","Please enter all fields")
+    }
+    else if(password!==confirmPassword){
+      Alert.alert("Incorrect Password","Please re-enter your password")
+    } else{
+      response = await fetch("https://9tj0pwqw-5000.inc1.devtunnels.ms/signup", {
+       method: "POST",
+       headers: { 'Content-Type': 'application/json' },
+       body: JSON.stringify({
+         firstname: name,
+         email: email,
+         password: password
+       })
+     })
+     data = await response.json()
+     console.log(data)
+     if(data["code"]==201){
+       Alert.alert("Successful!","User Created successfully")
+       userCreatedData = data["userData"]
+     }
+
+    }
+
   }
 
   return (
@@ -51,7 +62,7 @@ export default function App() {
             <View style={styles.rectangleView}>
               <TextInput style={styles.inputField} placeholder='Confirm Password' value={confirmPassword} onChangeText={(text) => setComfirmPassword(text)} /></View>
             <View style={styles.rectangleIcon} />;
-            <TouchableWithoutFeedback onPress={handleProceed}><View style={styles.proceedBox}><Text style={styles.proceedText}>{userResp}</Text></View></TouchableWithoutFeedback>
+            <TouchableWithoutFeedback onPress={handleProceed}><View style={styles.proceedBox}><Text style={styles.proceedText}>Proceed</Text></View></TouchableWithoutFeedback>
             <View style={styles.google}><Text style={styles.googleText}>Sign Up using Google
               {/* <Image source={require('./assets/Search.png')} style={styles.googleImage}></Image> */}
             </Text>

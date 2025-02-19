@@ -1,8 +1,11 @@
 // import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
-import { StyleSheet, Text, View, Image, TextInput, KeyboardAvoidingView, ScrollView, TouchableWithoutFeedback, Platform, StatusBar , Dimensions, Alert} from 'react-native';
+import { StyleSheet, Text, View, Image, TextInput, KeyboardAvoidingView, ScrollView, TouchableWithoutFeedback, Platform, StatusBar, Dimensions, Alert } from 'react-native';
+import { createStaticNavigation, useNavigation, } from '@react-navigation/native';
 
 export default function App() {
+  const navigation = useNavigation();
+
   const [email, setEmail] = useState(undefined)
   const [name, setName] = useState(undefined)
   const [password, setPassword] = useState(undefined)
@@ -12,28 +15,29 @@ export default function App() {
     console.log('name = ', name)
     console.log('email = ', email)
     console.log('password = ', password)
-    let response,data, userCreatedData
-    if(email==undefined || name==undefined || password==undefined || confirmPassword==undefined){
-      Alert.alert("ahh haa, not possible","Please enter all fields")
+    let response, data, userCreatedData
+    if (email == undefined || name == undefined || password == undefined || confirmPassword == undefined) {
+      Alert.alert("ahh haa, not possible", "Please enter all fields")
     }
-    else if(password!==confirmPassword){
-      Alert.alert("Incorrect Password","Please re-enter your password")
-    } else{
+    else if (password !== confirmPassword) {
+      Alert.alert("Incorrect Password", "Please re-enter your password")
+    } else {
       response = await fetch("https://9tj0pwqw-5000.inc1.devtunnels.ms/signup", {
-       method: "POST",
-       headers: { 'Content-Type': 'application/json' },
-       body: JSON.stringify({
-         firstname: name,
-         email: email,
-         password: password
-       })
-     })
-     data = await response.json()
-     console.log(data)
-     if(data["code"]==201){
-       Alert.alert("Successful!","User Created successfully")
-       userCreatedData = data["userData"]
-     }
+        method: "POST",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          firstname: name,
+          email: email,
+          password: password
+        })
+      })
+      data = await response.json()
+      console.log(data)
+      if (data["code"] == 201) {
+        Alert.alert("Successful!", "User Created successfully")
+        userCreatedData = data["userData"]
+        navigation.navigate('Homepage')
+      }
 
     }
 
@@ -72,7 +76,7 @@ export default function App() {
               justifyContent: 'center'
             }}>
               <Text style={styles.toLogin}>Already have a account?
-              <Text style={styles.logIn}>Log in!</Text></Text>
+                <Text style={styles.logIn}>Log in!</Text></Text>
 
 
             </View>
@@ -85,8 +89,8 @@ export default function App() {
 const styles = StyleSheet.create({
   outerContainer: {
     flex: 1,
-    marginTop:Platform.OS == "android" ? StatusBar.currentHeight:0
-  
+    marginTop: Platform.OS == "android" ? StatusBar.currentHeight : 0
+
   },
   container: {
     height: Dimensions.get('window').height,
@@ -102,7 +106,7 @@ const styles = StyleSheet.create({
     borderColor: '#FFDCB9',
     borderRadius: 10,
     padding: 20,
-    paddingTop:0,
+    paddingTop: 0,
     marginTop: "10%",
     marginBottom: "5%",
     justifyContent: 'center',

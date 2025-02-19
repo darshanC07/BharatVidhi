@@ -71,7 +71,7 @@ export default function Login({ navigation }) {
       }
       if (data.redirect) {
         //   navigation.navigate(`${data.redirect}`);
-        navigation.navigate("Homepage");
+        navigation.replace("Homepage");
       }
     } catch (error) {
       Alert.alert("Error", "Something went wrong.");
@@ -95,11 +95,11 @@ export default function Login({ navigation }) {
           style={styles.flag2}
         />
         <Image
-          source={require("../assets/login/chakra1.png")}
+          source={require("../assets/login/chakra2.png")}
           style={styles.bg1}
         />
         <Image
-          source={require("../assets/login/chakra2.png")}
+          source={require("../assets/login/chakra1.png")}
           style={styles.bg2}
         />
         <Image

@@ -1,10 +1,77 @@
 // import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Image, TextInput, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, ScrollView, Platform, StatusBar, Dimensions} from 'react-native';
+import React, { useEffect, useState } from "react";
+import { StyleSheet, Text, View, Image, TextInput, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, ScrollView, Platform, StatusBar, Dimensions } from 'react-native';
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function App() {
+export default function Login({ navigation }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const checkUserSession = async () => {
+        const userSession = await AsyncStorage.getItem("userSession");
+        if (userSession) {
+          navigation.replace("Homepage");
+        }
+      };
+
+      checkUserSession();
+
+      return () => { };
+    }, [])
+  );
+
+  const handleLogin = async () => {
+    if (!email || !password) {
+      Alert.alert("Error", "Please enter both email and password.");
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      Alert.alert("Error", "Please enter a valid email address.");
+      return;
+    }
+
+    if (password.length < 6) {
+      Alert.alert("Error", "Password must be at least 6 characters long.");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        "https://9tj0pwqw-5000.inc1.devtunnels.ms/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, password }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        await AsyncStorage.setItem("userSession", JSON.stringify(data.user));
+        Alert.alert("Success", `${data.message}`);
+      } else {
+        Alert.alert("Error", data.error || "Invalid credentials");
+      }
+      if (data.redirect) {
+        //   navigation.navigate(`${data.redirect}`);
+        navigation.replace("Homepage");
+      }
+    } catch (error) {
+      Alert.alert("Error", "Something went wrong.");
+      console.error(error);
+    }
+  };
   return (
-      <ScrollView style={styles.scrollContainer}>
-        <KeyboardAvoidingView>
+    <ScrollView style={styles.scrollContainer}>
+      <KeyboardAvoidingView>
         <View style={styles.container}>
           <Image source={require('../assets/login/Rectangle_1.png')} style={styles.flag1}></Image>
           <Image source={require('../assets/login/Rectangle_2.png')} style={styles.flag2}></Image>
@@ -14,46 +81,46 @@ export default function App() {
           <View style={styles.borderContainer}>
             <Text style={styles.text}>BHARAT VIDHI</Text>
             <Text style={styles.logIn}>LOGIN</Text>;
-            <View style={styles.rectangleView}> 
-            <TextInput style={styles.fieldText} placeholder='Email-id'></TextInput></View>
-            <View style={styles.rectangleView}> 
-            <TextInput style={styles.fieldText} placeholder='Password'></TextInput ></View>
+            <View style={styles.rectangleView}>
+              <TextInput style={styles.fieldText} placeholder='Email-id'></TextInput></View>
+            <View style={styles.rectangleView}>
+              <TextInput style={styles.fieldText} placeholder='Password'></TextInput ></View>
             <View style={styles.rectangleIcon} />;
-            <View style={styles.proceedBox}><Text style={styles.proceedText}>PROCEED</Text></View>
+            <TouchableWithoutFeedback onPress={handleLogin}><View style={styles.proceedBox}><Text style={styles.proceedText}>PROCEED</Text></View></TouchableWithoutFeedback>
             <View style={styles.google}><Text style={styles.googleText}>Sign Up using Google
               <Image source={require('../assets/login/Search.png')} style={styles.googleImage}></Image>
-              </Text>
+            </Text>
             </View>
             <Text style={styles.toSignUp}>Don't have a account?
               <Text style={styles.signUp}>Sign up!</Text>
             </Text>
           </View>
         </View>
-        </KeyboardAvoidingView>
-        </ScrollView>
+      </KeyboardAvoidingView>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  scrollContainer : {
-    flex : 1,
+  scrollContainer: {
+    flex: 1,
     marginTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
   },
   container: {
-    flex : 1,
-    height : Dimensions.get('window').height,
+    flex: 1,
+    height: Dimensions.get('window').height,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#FFFFFF'
   },
-  borderContainer : {
+  borderContainer: {
     width: '90%',
     height: '100%',
     borderWidth: 5,
     borderColor: '#FFDCB9',
     borderRadius: 10,
     padding: 20,
-    marginTop : "20%",
+    marginTop: "20%",
     marginBottom: "3%",
     justifyContent: 'center',
     alignItems: 'center'
@@ -70,7 +137,7 @@ const styles = StyleSheet.create({
     textAlignVertical: "center",
     fontFamily: "monospace",
   },
-  logIn : {
+  logIn: {
     fontSize: 24,
     lineHeight: 70,
     fontFamily: "itim",
@@ -79,7 +146,7 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    width: 122, 
+    width: 122,
     paddingTop: "15%"
   },
   rectangleView: {
@@ -89,7 +156,7 @@ const styles = StyleSheet.create({
     height: "7%",
     opacity: 0.5,
     // marginTop : '%',
-    textAlignVertical : 'center',
+    textAlignVertical: 'center',
     marginBottom: '10%'
   },
   fieldText: {
@@ -100,8 +167,8 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center"
   },
-  proceedBox : {
-    height: "5%", 
+  proceedBox: {
+    height: "5%",
     width: "30%",
     backgroundColor: "#B8B8FF",
     marginTop: "5%",
@@ -110,13 +177,13 @@ const styles = StyleSheet.create({
     borderColor: "#B8B8FF",
     borderWidth: 2,
   },
-  proceedText : {
+  proceedText: {
     textAlign: "center",
     color: "#232ED1",
     paddingTop: "5%",
     fontWeight: "bold"
   },
-  google : {
+  google: {
     backgroundColor: "rgba(189, 184, 179, 0.25)",
     width: "70%",
     height: "5%",
@@ -125,52 +192,52 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     borderRadius: 5
   },
-  googleText : {
+  googleText: {
     textAlign: "center",
-    verticalAlign : 'middle'
+    verticalAlign: 'middle'
   },
-  googleImage : {
-    alignSelf : 'flex-end',
-    verticalAlign : 'middle', 
-    opacity : 1,
-    height:30,
-    width:30
+  googleImage: {
+    alignSelf: 'flex-end',
+    verticalAlign: 'middle',
+    opacity: 1,
+    height: 30,
+    width: 30
   },
-  toSignUp : {
-    marginTop : 20
+  toSignUp: {
+    marginTop: 20
   },
-  signUp : {
-    textDecorationLine : "underline"
+  signUp: {
+    textDecorationLine: "underline"
   },
-  flag1 : {
+  flag1: {
     top: '17%',
-    position : 'absolute',
-    resizeMode : 'contain'
+    position: 'absolute',
+    resizeMode: 'contain'
   },
-  flag2 : {
+  flag2: {
     top: '27%',
-    position : 'absolute',
-    resizeMode : 'contain'
+    position: 'absolute',
+    resizeMode: 'contain'
   },
-  bg1 : {
-    position : 'absolute',
-    right : 0, 
-    top : 0,
-    resizeMode : 'contain',
-    opacity : 0.7
+  bg1: {
+    position: 'absolute',
+    right: 0,
+    top: 0,
+    resizeMode: 'contain',
+    opacity: 0.7
   },
-  bg2 : {
-    position : 'absolute',
-    right : 0, 
-    top : 70,
-    resizeMode : 'contain',
-    opacity : 0.95
+  bg2: {
+    position: 'absolute',
+    right: 0,
+    top: 70,
+    resizeMode: 'contain',
+    opacity: 0.95
   },
-  bg3 : {
-    position : 'absolute',
-    left : 0, 
-    bottom : 0,
-    resizeMode : 'contain',
-    opacity : 0.8
+  bg3: {
+    position: 'absolute',
+    left: 0,
+    bottom: 0,
+    resizeMode: 'contain',
+    opacity: 0.8
   }
 });

@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Image, TextInput, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, ScrollView, Platform} from 'react-native';
 
-export default function App() {
+export default function Login() {
   return (
       <ScrollView style={styles.scrollContainer}>
         <KeyboardAvoidingView>

@@ -3,7 +3,7 @@ import { StyleSheet, Text, View , TouchableOpacity,SafeAreaView,Image, Platform,
 import Footer from './Footer';
 import { useNavigation } from '@react-navigation/native'; 
 
-export default function Home() {
+export default function Property() {
   const navigation = useNavigation();
   return (
     <SafeAreaView style={styles.container}>

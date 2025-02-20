@@ -1,6 +1,6 @@
 // import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
-import { StyleSheet, Text, View, Image, TextInput, KeyboardAvoidingView, ScrollView, TouchableWithoutFeedback, Platform, StatusBar, Dimensions, Alert } from 'react-native';
+import { StyleSheet, Text, View, Image, TextInput, KeyboardAvoidingView, ScrollView, TouchableWithoutFeedback, Platform, StatusBar, Dimensions, Alert, TouchableHighlight } from 'react-native';
 import { createStaticNavigation, useNavigation, } from '@react-navigation/native';
 
 export default function App() {
@@ -36,7 +36,7 @@ export default function App() {
       if (data["code"] == 201) {
         Alert.alert("Successful!", "User Created successfully")
         userCreatedData = data["userData"]
-        navigation.navigate('Homepage')
+        navigation.replace('Login')
       }
 
     }
@@ -76,12 +76,14 @@ export default function App() {
               justifyContent: 'center'
             }}>
               <Text style={styles.toLogin}>Already have a account?
-                <Text style={styles.logIn}>Log in!</Text></Text>
+                <TouchableWithoutFeedback onPress={()=>{
+                  navigation.navigate("Login")
+                }}><Text style={styles.logIn}>Log in!</Text></TouchableWithoutFeedback>
+                </Text>
 
-
-            </View>
           </View>
-        </View></KeyboardAvoidingView>
+        </View>
+      </View></KeyboardAvoidingView>
     </ScrollView >
   );
 }

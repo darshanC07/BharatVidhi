@@ -1,12 +1,13 @@
 // import { StatusBar } from 'expo-status-bar';
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState} from "react";
 import { StyleSheet, Text, View, Image, TextInput, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, ScrollView, Platform, StatusBar, Dimensions } from 'react-native';
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function Login({ navigation }) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+export default function Login() {
+  const navigation = useNavigation()
+  const [email, setEmail] = useState(undefined)
+  const [password, setPassword] = useState(undefined)
 
   useFocusEffect(
     React.useCallback(() => {
@@ -48,10 +49,12 @@ export default function Login({ navigation }) {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ email, password }),
+          body: JSON.stringify({
+            email: email,
+            password: password
+          }),
         }
       );
-
       const data = await response.json();
 
       if (response.ok) {
@@ -69,6 +72,31 @@ export default function Login({ navigation }) {
       console.error(error);
     }
   };
+
+  async function temphandleLogin(){
+    console.log("email",email)
+    console.log("password",password)
+    console.log("here")
+    let response = await fetch(
+      "https://9tj0pwqw-5000.inc1.devtunnels.ms/login",
+      {
+        method: "POST",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: email,
+          password: password
+        })
+      }
+    );
+    const data = await response.json();
+    // console.log("after")
+    console.log(data)
+    if(data["code"]==201){
+      navigation.navigate('Homepage')
+
+    }
+  }
+
   return (
     <ScrollView style={styles.scrollContainer}>
       <KeyboardAvoidingView>
@@ -82,9 +110,9 @@ export default function Login({ navigation }) {
             <Text style={styles.text}>BHARAT VIDHI</Text>
             <Text style={styles.logIn}>LOGIN</Text>;
             <View style={styles.rectangleView}>
-              <TextInput style={styles.fieldText} placeholder='Email-id'></TextInput></View>
+              <TextInput style={styles.fieldText} placeholder='Email-id' value={email} onChangeText={(text)=>setEmail(text)}></TextInput></View>
             <View style={styles.rectangleView}>
-              <TextInput style={styles.fieldText} placeholder='Password'></TextInput ></View>
+              <TextInput style={styles.fieldText} placeholder='Password' value={password} onChangeText={(text)=>setPassword(text)}></TextInput ></View>
             <View style={styles.rectangleIcon} />;
             <TouchableWithoutFeedback onPress={handleLogin}><View style={styles.proceedBox}><Text style={styles.proceedText}>PROCEED</Text></View></TouchableWithoutFeedback>
             <View style={styles.google}><Text style={styles.googleText}>Sign Up using Google

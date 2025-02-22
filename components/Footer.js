@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { Text, View, Image, StyleSheet, TouchableHighlight, TouchableWithoutFeedback } from 'react-native'
 
 export default function Footer() {
+    const navigation = useNavigation()
     let defaultState = {
         icon1: false,
         icon2: false,
@@ -42,9 +44,11 @@ export default function Footer() {
             paddingLeft: 20,
             paddingRight: 20,
         }}>
-            <TouchableWithoutFeedback onPress={() => { handlePress(1) }} >
+            <TouchableWithoutFeedback onPress={() => { handlePress(1) 
+                navigation.navigate('CivicMastery')
+             }} >
                 <View style={tabBar.icon1 ? styles.onClickStyle : styles.highLightEffect}>
-                    <Image source={require('../assets/icon1.png')} style={styles.imageSize}/>
+                    <Image source={require('../assets/icon1.png')} style={styles.imageSize} />
                 </View>
             </TouchableWithoutFeedback>
             <TouchableWithoutFeedback onPress={() => { handlePress(2) }} >
@@ -53,15 +57,15 @@ export default function Footer() {
                 </View></TouchableWithoutFeedback>
             <TouchableWithoutFeedback onPress={() => { handlePress(3) }} >
                 <View style={tabBar.icon3 ? styles.onClickStyle : styles.highLightEffect}>
-                    <Image source={require('../assets/icon3.png')} style={styles.imageSize}/>
+                    <Image source={require('../assets/icon3.png')} style={styles.imageSize} />
                 </View></TouchableWithoutFeedback>
             <TouchableWithoutFeedback onPress={() => { handlePress(4) }} >
                 <View style={tabBar.icon4 ? styles.onClickStyle : styles.highLightEffect}>
-                    <Image source={require('../assets/icon4.png')} style={styles.imageSize}/>
+                    <Image source={require('../assets/icon4.png')} style={styles.imageSize} />
                 </View></TouchableWithoutFeedback>
             <TouchableWithoutFeedback onPress={() => { handlePress(5) }} >
                 <View style={tabBar.icon5 ? styles.onClickStyle : styles.highLightEffect}>
-                    <Image source={require('../assets/icon5.png')} style={styles.imageSize}/>
+                    <Image source={require('../assets/icon5.png')} style={styles.imageSize} />
                 </View></TouchableWithoutFeedback>
 
 

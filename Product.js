@@ -1,6 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View , TouchableOpacity,SafeAreaView,Image, Platform, PixelRatio,ScrollView} from 'react-native';
 import Footer from './Footer';
+import { useFonts, PatrickHandSC_400Regular } from '@expo-google-fonts/patrick-hand-sc';
 
 const ProductDisplay = ({name, description, price, image, onPress, accquired, total }) => {
     return (

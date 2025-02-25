@@ -6,6 +6,12 @@ import Homepage from './components/Homepage';
 import Login from './screens/Login';
 import SignUp from './screens/SignUp';
 import CivicMastery from './screens/CivicMastery';
+import Archives from './screens/Archives';
+import Product from './components/Product';
+import Property from './screens/Property';
+import Commercial from './screens/Commercial';
+import Rights from './screens/Rights';
+import Profile from './screens/Profile';
 import Card from './components/Card';
 // import NotificationScreen from './screens/NotificationScreen';
 // import Login from './Login'
@@ -28,6 +34,12 @@ export default function App() {
         <Stack.Screen name="SignUp" component={SignUp} options={{headerShown : false}}/>
         <Stack.Screen name='CivicMastery' component={CivicMastery} options={{headerShown : false}}/>
         <Stack.Screen name="Login" component={Login} options={{headerShown : false}}/>
+        <Stack.Screen name="Archives" component={Archives} options={{headerShown : false}}/>
+        <Stack.Screen name="Product" component={Product} options={{headerShown : false}}/>
+        <Stack.Screen name="Property" component={Property} options={{headerShown : false}}/>
+        <Stack.Screen name="Rights" component={Rights} options={{headerShown : false}}/>
+        <Stack.Screen name="Commercial" component={Commercial} options={{headerShown : false}}/>
+        <Stack.Screen name="Profile" component={Profile} options={{headerShown : false}}/>
       </Stack.Navigator>
      </NavigationContainer>
     // <CivicMastery></CivicMastery>

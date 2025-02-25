@@ -35,7 +35,7 @@ export default function Footer() {
             flexDirection: 'row',
             justifyContent: 'space-between',
             height: 60,
-            backgroundColor: 'lightblue',
+            backgroundColor: '#FFEEDD',
             position: 'absolute',
             bottom: 0,
             // top:0,
@@ -55,7 +55,9 @@ export default function Footer() {
                 <View style={tabBar.icon2 ? styles.onClickStyle : styles.highLightEffect}>
                     <Image source={require('../assets/icon2.png')} style={styles.imageSize} />
                 </View></TouchableWithoutFeedback>
-            <TouchableWithoutFeedback onPress={() => { handlePress(3) }} >
+            <TouchableWithoutFeedback onPress={() => { handlePress(3)
+                navigation.navigate("Homepage")
+             }} >
                 <View style={tabBar.icon3 ? styles.onClickStyle : styles.highLightEffect}>
                     <Image source={require('../assets/icon3.png')} style={styles.imageSize} />
                 </View></TouchableWithoutFeedback>
@@ -63,7 +65,9 @@ export default function Footer() {
                 <View style={tabBar.icon4 ? styles.onClickStyle : styles.highLightEffect}>
                     <Image source={require('../assets/icon4.png')} style={styles.imageSize} />
                 </View></TouchableWithoutFeedback>
-            <TouchableWithoutFeedback onPress={() => { handlePress(5) }} >
+            <TouchableWithoutFeedback onPress={() => { handlePress(5) 
+                navigation.navigate("Archives")
+            }} >
                 <View style={tabBar.icon5 ? styles.onClickStyle : styles.highLightEffect}>
                     <Image source={require('../assets/icon5.png')} style={styles.imageSize} />
                 </View></TouchableWithoutFeedback>
@@ -77,7 +81,7 @@ export default function Footer() {
 let styles = StyleSheet.create({
     highLightEffect: {
         height: 60,
-        backgroundColor: 'lightblue',
+        backgroundColor: '#FFEEDD',
         paddingTop: 5,
         alignContent: 'center',
         alignItems: 'center',
@@ -88,7 +92,7 @@ let styles = StyleSheet.create({
         borderBottomRightRadius: '50%',
         borderTopLeftRadius: '50%',
         borderTopRightRadius: '50%',
-        backgroundColor: 'lightblue',
+        backgroundColor: '#FFEEDD',
     },
     imageSize: {
         height: 52,

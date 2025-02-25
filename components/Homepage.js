@@ -10,6 +10,7 @@ import {
   Platform,
   StatusBar,
   TouchableWithoutFeedback
+  , ImageBackground
 } from "react-native";
 import Footer from "./Footer";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
@@ -21,12 +22,12 @@ import * as ScreenOrientation from 'expo-screen-orientation';
 export default function Homepage() {
   const navigation = useNavigation()
   const [user, setUser] = useState(null);
-  const [orientation,setOrientation] = useState()
+  const [orientation, setOrientation] = useState()
 
   async function changeScreenOrientation() {
     await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
   }
-  
+
   useFocusEffect(
     React.useCallback(() => {
       const fetchUser = async () => {
@@ -45,14 +46,14 @@ export default function Homepage() {
     }, [])
   );
 
-  useEffect(()=>{
+  useEffect(() => {
     async function getCurrentOrientation() {
       let currentOrientation = await ScreenOrientation.getOrientationAsync();
       console.log(currentOrientation)
       setOrientation(currentOrientation)
     }
     getCurrentOrientation()
-  },[orientation])
+  }, [orientation])
   const handleLogout = async () => {
     await AsyncStorage.removeItem("userSession");
     navigation.replace("Login");
@@ -67,6 +68,7 @@ export default function Homepage() {
     <View
       style={{
         flex: 1,
+        marginTop: 0
       }}
     >
       <View
@@ -90,15 +92,12 @@ export default function Homepage() {
             flexDirection: "row",
           }}
         >
-          <Text
-            style={{
-              fontSize: 25,
-              flex: 2,
-              // width:50
-            }}
-          >
-            BharatVidhi
-          </Text>
+          <Text style={{
+            fontSize: 25,
+            color: '#232ED1',
+            fontWeight: 'bold',
+            textAlign: 'left',
+          }}>BHARAT VIDHI</Text>
 
           <View
             style={{
@@ -112,14 +111,17 @@ export default function Homepage() {
             <Image source={require("../assets/coins.png")} />
             <Image
               source={require("../assets/profile.png")}
-              onTouchEnd={handleLogout}
+              onTouchEnd={()=>{
+                navigation.navigate("Profile")
+              }
+              }
             />
           </View>
         </View>
         <View
           style={{
             height: 120,
-            backgroundColor: "grey",
+            backgroundColor: "#FFD8BE",
             borderTopLeftRadius: 30,
             borderBottomRightRadius: 30,
             borderBottomLeftRadius: 50,
@@ -140,58 +142,84 @@ export default function Homepage() {
         <ScrollView
           style={{
             height: 520,
+            gap: 2
           }}
           showsVerticalScrollIndicator={false}
         >
-          <View
-            style={{
-              backgroundColor: "lightblue",
+          <ImageBackground source={require('../assets/fundamentals.png')} style={{
+            resizeMode: 'cover',
+            height: 120,
+            marginBottom: 10,
+            justifyContent: 'center'
+          }}><Text style={{
+            textAlign: 'center',
+            fontSize: 18,
+            fontWeight: '800',
+            color: 'white'
+          }}>FUNDAMENTALS</Text></ImageBackground>
+
+          <TouchableWithoutFeedback onPress={() => {
+            navigation.navigate("Rights")
+
+          }
+          }>
+            <ImageBackground source={require('../assets/map_basic.png')} style={{
+              resizeMode: 'cover',
               height: 120,
               marginBottom: 10,
-            }}
-          ></View>
-          <View
-            style={{
-              backgroundColor: "lightblue",
+              justifyContent: 'center'
+            }}><TouchableWithoutFeedback onPress={() => {
+              navigation.navigate("Rights")
+
+            }
+            }><Text style={{
+              textAlign: 'center',
+              fontSize: 18,
+              fontWeight: '800',
+              color: 'white'
+            }}>RIGHTS</Text></TouchableWithoutFeedback></ImageBackground></TouchableWithoutFeedback>
+
+          <TouchableWithoutFeedback onPress={() => {
+            navigation.navigate("Property")
+
+          }
+          }>
+            <ImageBackground source={require('../assets/property.png')} style={{
+              resizeMode: 'cover',
               height: 120,
               marginBottom: 10,
-            }}
-          ></View>
-          <View
-            style={{
-              backgroundColor: "lightblue",
+              justifyContent: 'center'
+            }}><TouchableWithoutFeedback onPress={() => {
+              navigation.navigate("Property")
+
+            }
+            }><Text style={{
+              textAlign: 'center',
+              fontSize: 18,
+              fontWeight: '800',
+              color: 'white'
+            }}>PROPERTY</Text></TouchableWithoutFeedback></ImageBackground></TouchableWithoutFeedback>
+
+          <TouchableWithoutFeedback onPress={() => {
+            navigation.navigate("Commercial")
+
+          }
+          }>
+            <ImageBackground source={require('../assets/commercial.png')} style={{
+              resizeMode: 'cover',
               height: 120,
               marginBottom: 10,
-            }}
-          ></View>
-          <View
-            style={{
-              backgroundColor: "lightblue",
-              height: 120,
-              marginBottom: 10,
-            }}
-          ></View>
-          <View
-            style={{
-              backgroundColor: "lightblue",
-              height: 120,
-              marginBottom: 10,
-            }}
-          ></View>
-          <View
-            style={{
-              backgroundColor: "lightblue",
-              height: 120,
-              marginBottom: 10,
-            }}
-          ></View>
-          <View
-            style={{
-              backgroundColor: "lightblue",
-              height: 120,
-              marginBottom: 10,
-            }}
-          ></View>
+              justifyContent: 'center'
+            }}><TouchableWithoutFeedback onPress={() => {
+              navigation.navigate("Commercial")
+
+            }
+            }><Text style={{
+              textAlign: 'center',
+              fontSize: 18,
+              fontWeight: '800',
+              color: 'white'
+            }}>COMMERCIAL</Text></TouchableWithoutFeedback></ImageBackground></TouchableWithoutFeedback>
         </ScrollView>
       </View>
       <Footer></Footer>

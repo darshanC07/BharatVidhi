@@ -1,5 +1,5 @@
 // import { StatusBar } from 'expo-status-bar';
-import React, { useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View, Image, TextInput, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, ScrollView, Platform, StatusBar, Dimensions } from 'react-native';
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -8,12 +8,14 @@ export default function Login() {
   const navigation = useNavigation()
   const [email, setEmail] = useState(undefined)
   const [password, setPassword] = useState(undefined)
-
+  const [user,setUser] = useState(null)
+  const [response,setResponse] = useState(null)
   useFocusEffect(
     React.useCallback(() => {
       const checkUserSession = async () => {
         const userSession = await AsyncStorage.getItem("userSession");
         if (userSession) {
+          setUser(userSession)
           navigation.replace("Homepage");
         }
       };
@@ -24,7 +26,9 @@ export default function Login() {
     }, [])
   );
 
+
   const handleLogin = async () => {
+    console.log(email, password)
     if (!email || !password) {
       Alert.alert("Error", "Please enter both email and password.");
       return;
@@ -56,10 +60,13 @@ export default function Login() {
         }
       );
       const data = await response.json();
-
-      if (response.ok) {
+      setResponse(data)
+      if (data.code == 201) {
+        // console.log("inside login")
         await AsyncStorage.setItem("userSession", JSON.stringify(data.user));
-        Alert.alert("Success", `${data.message}`);
+        console.log("setting user : ",JSON.stringify(data.user))
+        setUser(JSON.stringify(data.user))
+        Alert.alert("Success", data.message);
       } else {
         Alert.alert("Error", data.error || "Invalid credentials");
       }
@@ -72,10 +79,13 @@ export default function Login() {
       console.error(error);
     }
   };
+  // useEffect(() => {
+  //   handleLogin()
+  // }, [response])
 
-  async function temphandleLogin(){
-    console.log("email",email)
-    console.log("password",password)
+  async function temphandleLogin() {
+    console.log("email", email)
+    console.log("password", password)
     console.log("here")
     let response = await fetch(
       "https://9tj0pwqw-5000.inc1.devtunnels.ms/login",
@@ -91,7 +101,7 @@ export default function Login() {
     const data = await response.json();
     // console.log("after")
     console.log(data)
-    if(data["code"]==201){
+    if (data["code"] == 201) {
       navigation.navigate('Homepage')
 
     }
@@ -110,9 +120,9 @@ export default function Login() {
             <Text style={styles.text}>BHARAT VIDHI</Text>
             <Text style={styles.logIn}>LOGIN</Text>;
             <View style={styles.rectangleView}>
-              <TextInput style={styles.fieldText} placeholder='Email-id' value={email} onChangeText={(text)=>setEmail(text)}></TextInput></View>
+              <TextInput style={styles.fieldText} placeholder='Email-id' value={email} onChangeText={(text) => setEmail(text)}></TextInput></View>
             <View style={styles.rectangleView}>
-              <TextInput style={styles.fieldText} placeholder='Password' value={password} onChangeText={(text)=>setPassword(text)}></TextInput ></View>
+              <TextInput style={styles.fieldText} placeholder='Password' value={password} onChangeText={(text) => setPassword(text)}></TextInput ></View>
             <View style={styles.rectangleIcon} />;
             <TouchableWithoutFeedback onPress={handleLogin}><View style={styles.proceedBox}><Text style={styles.proceedText}>PROCEED</Text></View></TouchableWithoutFeedback>
             <View style={styles.google}><Text style={styles.googleText}>Sign Up using Google

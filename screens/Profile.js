@@ -87,7 +87,7 @@ export default function Profile() {
                     <ImageBackground source={require('../assets/profile_bg.png')} style={styles.bg}>
                         <Image source={require('../assets/Profile_page.png')} style={styles.pfp}></Image>
                         <View style={styles.data}>
-                            <Details name={user?user.name:"demo"} age={'17'} email={'d..@gmail.com'}></Details>
+                            <Details name={user?user.name:"demo"} age={'17'} email={user?user.name:"abc@gmail.com"}></Details>
                             <View style={{ flexDirection: 'row', gap: 20 }}>
                                 <View style={styles.block}>
                                     <Text style={{ fontSize: 18, alignSelf: 'center', top: 20 }}>{Streaks}</Text>

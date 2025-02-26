@@ -13,6 +13,7 @@ import Commercial from './screens/Commercial';
 import Rights from './screens/Rights';
 import Profile from './screens/Profile';
 import Card from './components/Card';
+import Learning from './screens/Learning';
 // import NotificationScreen from './screens/NotificationScreen';
 // import Login from './Login'
 
@@ -40,6 +41,7 @@ export default function App() {
         <Stack.Screen name="Rights" component={Rights} options={{headerShown : false}}/>
         <Stack.Screen name="Commercial" component={Commercial} options={{headerShown : false}}/>
         <Stack.Screen name="Profile" component={Profile} options={{headerShown : false}}/>
+        <Stack.Screen name="Learning" component={Learning} options={{headerShown : false}}/>
       </Stack.Navigator>
      </NavigationContainer>
     // <CivicMastery></CivicMastery>

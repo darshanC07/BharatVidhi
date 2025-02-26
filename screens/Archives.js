@@ -1,11 +1,9 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View , TouchableOpacity,SafeAreaView,Image, Platform, PixelRatio,ScrollView} from 'react-native';
-import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import Footer from '../components/Footer';
-import Product from '../components/Product';
+import { useFonts, PatrickHandSC_400Regular } from '@expo-google-fonts/patrick-hand-sc';
 
 const ProductCard = ({name, description, price, image, onPress }) => {
-    const navigation = useNavigation()
     return (
       <TouchableOpacity style={{
         backgroundColor: 'rgba(255, 238, 221, 0.5)',
@@ -80,7 +78,7 @@ export default function Archives() {
         </View>
     </View>
     <Text style={styles.archives1}>ARCHIVES</Text>
-    <ScrollView style={styles.scroll} showsVerticalScrollIndicator={false}>
+    <ScrollView style={styles.scroll}>
         <ProductCard name={'NAME'} description={'DESCRIPTION -- --'} price={'15'} image={source=require('../assets/stamp.png')} />
         <ProductCard name={'NAME'} description={'DESCRIPTION -- --'} price={'15'} image={source=require('../assets/Civil-Services.png')} />
         <ProductCard name={'NAME'} description={'DESCRIPTION -- --'} price={'15'} image={source=require('../assets/stamp.png')} />

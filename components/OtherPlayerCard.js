@@ -34,7 +34,7 @@ export default function Card({ cardheight, cardwidth, question, correctOption, e
                 {options != 0 ?
                     options.map((item, i) => (
                         // console.log(item);
-                        <TouchableWithoutFeedback onPress={(i)=>handleOptionClick(i+1)}>
+                        <TouchableWithoutFeedback onPress={()=>handleOptionClick(i+1)}>
                             <View key={i} style={{
                                 height: 30,
                                 width: 50,

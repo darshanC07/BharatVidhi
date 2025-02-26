@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useLayoutEffect } from "react";
+import React, { useState, useEffect, useLayoutEffect , useRef} from "react";
 import {
     Text,
     View,
@@ -38,6 +38,16 @@ export default function CivicMastery() {
     const [fourthPlayerCardCount, setFourthPlayerCardCount] = useState(0)
     const [clicledCard, setCLickedCard] = useState(null)
     const [clicked, setClicked] = useState(false)
+    const [totalPoints, setTotalPoints] = useState(0)
+    const [clickedAnswer, setClickedAnswer] = useState(false)
+    const [isCorrect, setCorrect] = useState(false)
+    const [isWrong, setWrong] = useState(false)
+    const [running, setRunning] = useState(false);
+    const [time, setTime] = useState(10);
+    const [isTimeRemained, setTimeRemained] = useState(false)
+    const [gameOver, setGameOver] = useState(false);
+    const timeEndedRef = useRef(false);
+    
     // Get user session from AsyncStorage
     useEffect(() => {
         const fetchUser = async () => {
@@ -76,8 +86,6 @@ export default function CivicMastery() {
                 onValue(userRef, (snapshot) => {
                     if (snapshot.exists()) {
                         setCardDeck(Object.values(snapshot.val().cardDeck || {}));
-                    } else {
-                        setCardDeck([]);
                     }
                 });
             } catch (error) {
@@ -136,14 +144,50 @@ export default function CivicMastery() {
         }
     }
 
+    useEffect(() => {
+        console.log("Updated cardDeck count:", cardDeck.length);
+    }, [cardDeck]);
+
+
     // Join WebSocket room when socket and user are set
-    function checkAnswer(correctOption, clickedOption){
-        if(correctOption==clickedOption){
-            console.log("correct answer")
+    // let checkAnswer;
+    function checkAnswer(correctOption, clickedOption) {
+        console.log("now my deck : ", cardDeck.length)
+        console.log("Correct:", correctOption, "Clicked:", clickedOption);
+
+        if (correctOption == clickedOption) {
+            console.log("✅ Correct Answer! Points:", totalPoints + 5);
+            setTotalPoints(prevPoints => prevPoints + 5);
+            // setWrong(false)
+            setCorrect(true)
         } else {
-            console.log("wrong answer")
+            console.log("❌ Wrong Answer!");
+            // setCorrect(false)
+            setWrong(true)
         }
+
+        setClickedAnswer(false);
     }
+
+    useEffect(() => {
+        if ( isWrong || isTimeRemained) {
+            setGameOver(true);
+        }
+    }, [ isWrong, isTimeRemained]);
+    
+    useEffect(() => {
+        if (gameOver) {
+            socket.emit("getCard", { uid: user.uid, cardCount: cardDeck.length + 1 });
+    
+            setWrong(false);
+            setTimeRemained(false);
+            setRunning(false);
+            setCorrect(false);
+            setClicked(false);
+            setGameOver(false); // Reset game over flag
+        }
+    }, [gameOver]);
+
     useEffect(() => {
         if (!socket || !user) return;
 
@@ -154,23 +198,45 @@ export default function CivicMastery() {
             console.log("data ", data)
             playerCardCount(data)
         });
-
-        socket.on("otherPlayersCard", (data) => {
-            playerCardCount(data["roomData"],1)
-            let cardData = data["cardData"]
-            setClicked(true)
-            setCLickedCard(
-                <TouchableHighlight onPress={() => {
-                    setClicked(false)
-                }}><OtherPlayerCard cardheight={250} cardwidth={150} title={cardData.name} correctOption={cardData.correctAnswer} question={cardData.content} eHeight={20} eWidth={20} options={cardData.isQuestion == "True" ? cardData.options : 0} handleOptionClick={(j)=>{checkAnswer(cardData.correctAnswer,j)}}></OtherPlayerCard></TouchableHighlight>
-            )
-        })
-
         return () => {
             socket.off("playerJoined"); // Cleanup event listener on unmount
         };
-    }, [socket, user]);
+    }, [socket, user, clickedAnswer]);
 
+    useEffect(() => {
+        if (!socket || !user) return;
+        socket.on("playerJoined", (data) => {
+            console.log("data ", data)
+            playerCardCount(data)
+        });
+
+        socket.on("otherPlayersCard", (data) => {
+            playerCardCount(data["roomData"], 1)
+            let cardData = data["cardData"]
+            console.log("my cards : ", cardDeck.length)
+            setClicked(true)
+            setTime(10)
+            setRunning(true)
+            setCLickedCard(
+                <TouchableHighlight onPress={() => {
+                    setClicked(false)
+                }}><OtherPlayerCard cardheight={250} cardwidth={150} title={cardData.name} correctOption={cardData.correctAnswer} question={cardData.content} eHeight={20} eWidth={20} options={cardData.isQuestion == "True" ? cardData.options : 0} handleOptionClick={(j) => { setClickedAnswer(true); checkAnswer(cardData.correctAnswer, j) }}></OtherPlayerCard></TouchableHighlight>
+            )
+        })
+
+        socket.on("newCard", (data) => {
+            playerCardCount(data["roomData"], 1)
+
+            if (data["playerData"]["uid"] == user.uid) {
+                console.log("currect cards : ", cardDeck)
+                setCardDeck((prevDeck) => [...prevDeck, data["newCard"][1]]);
+                // tempCardDeck.push(data["newCard"])
+                console.log("after cards : ", cardDeck)
+                // setCardDeck(cardDeck)
+
+            }
+        })
+    }, [socket, cardDeck])
     // Handle screen orientation
     useEffect(() => {
         async function changeScreenOrientation() {
@@ -232,28 +298,60 @@ export default function CivicMastery() {
         setClicked(false)
     }
     function handleOK(data, i) {
-        // console.log("index : ",index)
-        // let data = cardDeck[index]
+        console.log("Current cardDeck:", cardDeck);
 
         let currentCardCountData = {
             "uid": user.uid,
             "cardCount": cardDeck.length - 1
-        }
-        console.log("current cardDeck : ", cardDeck)
-        // console.log("new cardDeck",cardDeck.splice(i,1))
-        cardDeck.splice(i, 1)
-        setCardDeck(cardDeck)
-        console.log("clicked card data : ", data)
-        socket.emit("cardPlayed", { currentCardCountData, data })
-        console.log("ok")
-        setClicked(false)
+        };
+
+        const newDeck = cardDeck.filter((_, index) => index !== i);
+        setCardDeck(newDeck);
+
+        console.log("Clicked card data:", data);
+        socket.emit("cardPlayed", { currentCardCountData, data });
+
+        console.log("After handleOK - cardDeck:", newDeck);
+        setClicked(false);
     }
+
+
     function handleCardClick(i) {
         setClicked(true)
         setCLickedCard(
             <TouchableHighlight ><InvertedCard cardheight={250} cardwidth={150} title={cardDeck[i].name} correctOption={cardDeck[i].correctAnswer} question={cardDeck[i].content} eHeight={20} eWidth={20} options={cardDeck[i].isQuestion == "True" ? cardDeck[i].options : 0} handleCancel={handleCancel} handleOK={() => handleOK(cardDeck[i], i)}></InvertedCard></TouchableHighlight>
         )
     }
+
+    //timer
+    useEffect(() => {
+        let interval;
+
+        if (running && time > 0) {
+            interval = setInterval(() => setTime(t => t - 1), 1000);
+        }
+
+        return () => clearInterval(interval);
+    }, [running, time]);
+
+    useEffect(() => {
+        if (time === 0 && running && !timeEndedRef.current) {
+            timeEndedRef.current = true; 
+            setRunning(false);
+            setClicked(false);
+            setTimeRemained(true);
+            setTimeout(() => {
+                timeEndedRef.current = false; 
+            }, 100);
+        }
+    }, [time, running]);
+
+
+
+
+    // if(time===0){
+    //     socket.emit("getCard", { uid: user.uid, cardCount: cardDeck.length + 1 });
+    // }
 
     return (
         <SafeAreaView style={styles.container}>
@@ -351,6 +449,7 @@ export default function CivicMastery() {
             <View style={clicked && clicledCard ? styles.clickedCardStyle : { display: 'none' }}>
                 {clicledCard}
             </View>
+            <View style={running ? styles.timer : { display: 'none' }}> {running && <Text style={{ fontSize: 24 }}>Time: {time}s</Text>} </View>
         </SafeAreaView>
     )
 }
@@ -401,6 +500,14 @@ const styles = StyleSheet.create({
         bottom: "40%",
         left: "40%"
 
+    },
+    timer: {
+        position: 'absolute',
+        zIndex: 3,
+        bottom: "40%",
+        left: "45%",
+        justifyContent: 'center',
+        alignItems: 'center'
     }
 
 })

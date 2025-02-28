@@ -390,9 +390,41 @@ export default function CivicMastery() {
                         alignItems: 'center'
                     }}>
                         <View style={styles.cardContainer}>
-                            {cardDeck.map((card, i) => (
-                                <TouchableHighlight onPress={() => handleCardClick(i)}><Card cardheight={150} cardwidth={100} title={card.name} eHeight={20} eWidth={20} type={card.title} key={i}></Card></TouchableHighlight>
-                            ))}
+                            {cardDeck.map((card, i) => {
+                                const angle = (i - (cardDeck.length - 1) / 2) * 10; // Reduced angle for subtler curve
+                                const offsetX = (i - (cardDeck.length - 1) / 2) * 80; // More horizontal spacing
+
+                                return (
+                                    <TouchableHighlight
+                                        key={i}
+                                        onPress={() => handleCardClick(i)}
+                                        underlayColor="transparent"
+                                    >
+                                        <Card
+                                            cardheight={150}
+                                            cardwidth={100}
+                                            title={card.name}
+                                            eHeight={20}
+                                            eWidth={20}
+                                            type={card.title}
+                                            style={{
+                                                position: "absolute",
+                                                transform: [
+                                                    { translateX: offsetX },
+                                                    { rotate: `${angle}deg` },
+                                                    { translateY: Math.abs(angle) * 1.5 } // Adds vertical arc effect
+                                                ],
+                                                zIndex: i, // Makes cards overlap correctly
+                                                shadowColor: "#000",
+                                                shadowOffset: { width: 0, height: 2 },
+                                                shadowOpacity: 0.25,
+                                                shadowRadius: 3.84,
+                                                elevation: 5,
+                                            }}
+                                        />
+                                    </TouchableHighlight>
+                                );
+                            })}
                         </View>
                     </View>
                 </View>
@@ -474,17 +506,16 @@ const styles = StyleSheet.create({
         bottom: 0,
         left: '3.6%',
     },
-    card: {
-        position: "absolute",
-        // bottom: '90%',
-        left: '7%'
-    },
     cardContainer: {
-        flexDirection: 'row',
-        bottom: "30%",
-        alignItems: 'center'
-        // left: '50%'
-    },
+        flexDirection: "row",
+        position: "absolute",
+        bottom: "20%", // Adjust this value to move cards up
+        height: 470,
+        justifyContent: "center",
+        width: "100%",
+        alignItems: "center",
+        right:"7%"
+      },
     rightCardContainer: {
         // alignItems: 'center',
         // flexDirection: 'column',

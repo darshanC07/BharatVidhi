@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useLayoutEffect , useRef} from "react";
+import React, { useState, useEffect, useLayoutEffect, useRef } from "react";
 import {
     Text,
     View,
@@ -9,7 +9,8 @@ import {
     BackHandler,
     ImageBackground,
     Image,
-    TouchableHighlight
+    TouchableHighlight,
+    TouchableWithoutFeedback
 } from "react-native";
 import * as ScreenOrientation from "expo-screen-orientation";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -18,6 +19,7 @@ import { io } from "socket.io-client";
 import { db } from "../firebaseSetup";
 import { onValue, ref, get } from "firebase/database";
 import Card from "../components/Card";
+import Result from "../components/Result";
 import CardDeck from "../components/CardDeck";
 import InvertedCard from "../components/InvertedCard"
 import OtherPlayerCard from "../components/OtherPlayerCard"
@@ -47,7 +49,9 @@ export default function CivicMastery() {
     const [isTimeRemained, setTimeRemained] = useState(false)
     const [gameOver, setGameOver] = useState(false);
     const timeEndedRef = useRef(false);
-    
+    const [resultComponent, setResultComponent] = useState(null)
+    const [result, isResult] = useState(false)
+
     // Get user session from AsyncStorage
     useEffect(() => {
         const fetchUser = async () => {
@@ -66,7 +70,7 @@ export default function CivicMastery() {
 
     // Fetch card deck data from Firebase when user is set
     useEffect(() => {
-        if (!user) return; // Ensure user is available
+        if (!user) return;
 
         const fetchCardDeck = async () => {
             try {
@@ -156,29 +160,32 @@ export default function CivicMastery() {
         console.log("Correct:", correctOption, "Clicked:", clickedOption);
 
         if (correctOption == clickedOption) {
-            console.log("✅ Correct Answer! Points:", totalPoints + 5);
+            console.log("Correct Answer! Points:", totalPoints + 5);
             setTotalPoints(prevPoints => prevPoints + 5);
-            // setWrong(false)
             setCorrect(true)
+            isResult(true)
+            setResultComponent(<Result isCorrect={true} isWrong={false}></Result>)
         } else {
-            console.log("❌ Wrong Answer!");
-            // setCorrect(false)
+            console.log("Wrong Answer!");
             setWrong(true)
+            setGameOver(true)
+            isResult(true)
+            setResultComponent(<Result isCorrect={false} isWrong={true}></Result>)
         }
 
         setClickedAnswer(false);
     }
 
     useEffect(() => {
-        if ( isWrong || isTimeRemained) {
+        if (isWrong || isTimeRemained) {
             setGameOver(true);
         }
-    }, [ isWrong, isTimeRemained]);
-    
+    }, [isWrong, isTimeRemained]);
+
     useEffect(() => {
         if (gameOver) {
             socket.emit("getCard", { uid: user.uid, cardCount: cardDeck.length + 1 });
-    
+
             setWrong(false);
             setTimeRemained(false);
             setRunning(false);
@@ -336,22 +343,17 @@ export default function CivicMastery() {
 
     useEffect(() => {
         if (time === 0 && running && !timeEndedRef.current) {
-            timeEndedRef.current = true; 
+            timeEndedRef.current = true;
             setRunning(false);
             setClicked(false);
             setTimeRemained(true);
             setTimeout(() => {
-                timeEndedRef.current = false; 
+                timeEndedRef.current = false;
             }, 100);
         }
     }, [time, running]);
 
 
-
-
-    // if(time===0){
-    //     socket.emit("getCard", { uid: user.uid, cardCount: cardDeck.length + 1 });
-    // }
 
     return (
         <SafeAreaView style={styles.container}>
@@ -449,6 +451,10 @@ export default function CivicMastery() {
             <View style={clicked && clicledCard ? styles.clickedCardStyle : { display: 'none' }}>
                 {clicledCard}
             </View>
+            <TouchableWithoutFeedback onPress={() => { isResult(false) }}>
+                <View style={result ? styles.resultDisplay : { display: 'none' }}>
+                    {resultComponent}
+                </View></TouchableWithoutFeedback>
             <View style={running ? styles.timer : { display: 'none' }}> {running && <Text style={{ fontSize: 24 }}>Time: {time}s</Text>} </View>
         </SafeAreaView>
     )
@@ -494,6 +500,14 @@ const styles = StyleSheet.create({
         // alignItems: 'center'
     },
     clickedCardStyle: {
+        position: 'absolute',
+        zIndex: 2,
+        // top: 20,
+        bottom: "40%",
+        left: "40%"
+
+    },
+    resultDisplay: {
         position: 'absolute',
         zIndex: 2,
         // top: 20,

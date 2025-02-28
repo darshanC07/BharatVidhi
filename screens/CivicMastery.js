@@ -52,6 +52,7 @@ export default function CivicMastery() {
     const timeEndedRef = useRef(false);
     const [resultComponent, setResultComponent] = useState(null)
     const [result, isResult] = useState(false)
+    const newCardListenerRef = useRef(false);
 
     // Get user session from AsyncStorage
     useEffect(() => {
@@ -169,7 +170,7 @@ export default function CivicMastery() {
         } else {
             console.log("Wrong Answer!");
             setWrong(true)
-            setGameOver(true)
+            // setGameOver(true)
             isResult(true)
             setResultComponent(<Result isCorrect={false} isWrong={true}></Result>)
         }
@@ -185,7 +186,8 @@ export default function CivicMastery() {
 
     useEffect(() => {
         if (gameOver) {
-            socket.emit("getCard", { uid: user.uid, cardCount: cardDeck.length + 1 });
+            console.log("before adding : ", cardDeck.length)
+            socket.emit("getCard", { uid: user.uid, cardCount: cardDeck.length });
 
             setWrong(false);
             setTimeRemained(false);
@@ -232,18 +234,21 @@ export default function CivicMastery() {
             )
         })
 
-        socket.on("newCard", (data) => {
-            playerCardCount(data["roomData"], 1)
+        if (!newCardListenerRef.current) {
+            socket.on("newCard", (data) => {
+                playerCardCount(data["roomData"], 1)
 
-            if (data["playerData"]["uid"] == user.uid) {
-                console.log("currect cards : ", cardDeck)
-                setCardDeck((prevDeck) => [...prevDeck, data["newCard"][1]]);
-                // tempCardDeck.push(data["newCard"])
-                console.log("after cards : ", cardDeck)
-                // setCardDeck(cardDeck)
+                if (data["playerData"]["uid"] == user.uid) {
+                    console.log("currect cards : ", cardDeck)
+                    setCardDeck((prevDeck) => [...prevDeck, data["newCard"][1]]);
+                    // tempCardDeck.push(data["newCard"])
+                    console.log("after cards : ", cardDeck)
+                    // setCardDeck(cardDeck)
 
-            }
-        })
+                }
+            });
+            newCardListenerRef.current = true
+        }
     }, [socket, cardDeck])
     // Handle screen orientation
     useEffect(() => {
@@ -406,7 +411,7 @@ export default function CivicMastery() {
                                                 { translateX: offsetX },
                                                 { translateY: Math.abs(angle) * 2.4 } // Adds vertical arc effect
                                             ],
-                                            zIndex: i+1, // Makes cards overlap correctly
+                                            zIndex: i + 1, // Makes cards overlap correctly
                                             shadowColor: "#000",
                                             shadowOffset: { width: 0, height: 2 },
                                             shadowOpacity: 0.25,
@@ -510,8 +515,8 @@ const styles = StyleSheet.create({
     cardContainer: {
         flexDirection: "row",
         position: "absolute",
-        bottom: "5%", 
-        height:300,
+        bottom: "5%",
+        height: 300,
         justifyContent: "center",
         width: "100%",
         alignItems: "center",
@@ -541,7 +546,7 @@ const styles = StyleSheet.create({
     },
     resultDisplay: {
         position: 'absolute',
-        zIndex: 2,
+        zIndex: 12,
         // top: 20,
         bottom: "40%",
         left: "40%"
@@ -549,7 +554,7 @@ const styles = StyleSheet.create({
     },
     timer: {
         position: 'absolute',
-        zIndex: 3,
+        zIndex: 15,
         bottom: "40%",
         left: "45%",
         justifyContent: 'center',

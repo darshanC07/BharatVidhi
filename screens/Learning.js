@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, Platform, StatusBar, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Image, Platform, StatusBar, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import Footer from '../components/Footer';
 import { useFonts, PatrickHandSC_400Regular } from '@expo-google-fonts/patrick-hand-sc';
 import { Itim_400Regular } from "@expo-google-fonts/itim";
@@ -48,7 +48,9 @@ export default function Learning() {
         );
     };
 
-    const LearningCard = ({ image, description, title, bgcolor , options}) => {
+    const LearningCard = ({ image, description, title, bgcolor, options, correctOption }) => {
+        // console.log(options)
+        // console.log(correctOption)
         return (
             <View style={{ alignItems: 'center', marginTop: '6%' }}>
                 <View style={{
@@ -70,7 +72,7 @@ export default function Learning() {
                         textAlign: 'center',
                         fontFamily: 'Itim_400Regular'
                     }}>{title}</Text>
-                    {image !=0 ?
+                    {image != 0 ?
                         <Image source={image} style={{
                             alignSelf: 'center',
                             height: 200,
@@ -86,6 +88,41 @@ export default function Learning() {
                         textAlign: 'justify',
                         fontFamily: 'Itim_400Regular'
                     }}>{description}</Text>
+                    {
+                        options ?
+                            <View style={{
+                                width: '90%',
+                                height: "70%",
+                                // flexDirection: 'row',
+                                flexWrap: 'wrap',
+                                justifyContent: 'space-around'
+
+                            }}>
+                                {options.map((option, i) => (
+
+                                    <TouchableWithoutFeedback onPress={() => {
+                                        console.log(i)
+                                        if (i  == correctOption) {
+                                            console.log("correct answer")
+                                            setIndex(index=>index+1)
+                                        } else {
+                                            console.log("wrong answer")
+                                        }
+                                    }}>
+                                        <View style={{
+                                            height: 60,
+                                            width: "100%",
+                                            padding: 10,
+                                            backgroundColor: "lightblue",
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            // marginBottom: 20
+                                        }}><Text key={i} style={{
+                                            fontSize: 15,
+                                            color: "black"
+                                        }}>{option}</Text></View></TouchableWithoutFeedback>
+                                ))}</View> : <View></View>
+                    }
                     <TouchableOpacity
                         onPress={() => {
                             if (index > 0) {
@@ -104,7 +141,7 @@ export default function Learning() {
                     </TouchableOpacity>
                     <TouchableOpacity
                         onPress={() => {
-                            if(index<Object.values(moduleCards).length){
+                            if (index < Object.values(moduleCards).length) {
                                 console.log("next")
                                 setIndex(index => index + 1)
 
@@ -123,7 +160,7 @@ export default function Learning() {
                     </TouchableOpacity>
 
                 </View>
-            </View>
+            </View >
         );
     };
 
@@ -195,11 +232,12 @@ export default function Learning() {
                 <LearningCard
                     bgcolor={currentCard.color}
                     title={currentCard.title}
-                    image={currentCard.imgURL  ? currentCard.imgURL : 0}
-                    description={currentCard.data} 
-                    options = {currentCard.isQueCard?currentCard.options:null}
-                    /> : null
-                    
+                    image={currentCard.imgURL ? currentCard.imgURL : 0}
+                    description={currentCard.data}
+                    options={currentCard.isQueCard ? currentCard.options : null}
+                    correctOption={currentCard.isQueCard ? currentCard.correct : null}
+                /> : null
+
             }
             <Footer></Footer>
         </View>

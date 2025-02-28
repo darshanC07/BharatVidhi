@@ -10,7 +10,8 @@ import {
     ImageBackground,
     Image,
     TouchableHighlight,
-    TouchableWithoutFeedback
+    TouchableWithoutFeedback,
+    TouchableOpacity
 } from "react-native";
 import * as ScreenOrientation from "expo-screen-orientation";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -324,6 +325,7 @@ export default function CivicMastery() {
 
 
     function handleCardClick(i) {
+        console.log("clicked")
         setClicked(true)
         setCLickedCard(
             <TouchableHighlight ><InvertedCard cardheight={250} cardwidth={150} title={cardDeck[i].name} correctOption={cardDeck[i].correctAnswer} question={cardDeck[i].content} eHeight={20} eWidth={20} options={cardDeck[i].isQuestion == "True" ? cardDeck[i].options : 0} handleCancel={handleCancel} handleOK={() => handleOK(cardDeck[i], i)}></InvertedCard></TouchableHighlight>
@@ -391,14 +393,28 @@ export default function CivicMastery() {
                     }}>
                         <View style={styles.cardContainer}>
                             {cardDeck.map((card, i) => {
-                                const angle = (i - (cardDeck.length - 1) / 2) * 10; // Reduced angle for subtler curve
-                                const offsetX = (i - (cardDeck.length - 1) / 2) * 80; // More horizontal spacing
+                                const angle = (i - (cardDeck.length - 1) / 2) * 4; // Reduced angle for subtler curve
+                                const offsetX = (i - (cardDeck.length - 1) / 2) * 74; // More horizontal spacing
 
                                 return (
                                     <TouchableHighlight
                                         key={i}
-                                        onPress={() => handleCardClick(i)}
+                                        style={{
+                                            position: "absolute",
+                                            transform: [
+                                                { rotate: `${angle}deg` },
+                                                { translateX: offsetX },
+                                                { translateY: Math.abs(angle) * 2.4 } // Adds vertical arc effect
+                                            ],
+                                            zIndex: i+1, // Makes cards overlap correctly
+                                            shadowColor: "#000",
+                                            shadowOffset: { width: 0, height: 2 },
+                                            shadowOpacity: 0.25,
+                                            shadowRadius: 3.84,
+                                            elevation: 5,
+                                        }}
                                         underlayColor="transparent"
+                                        onPress={() => handleCardClick(i)}
                                     >
                                         <Card
                                             cardheight={150}
@@ -406,21 +422,6 @@ export default function CivicMastery() {
                                             title={card.name}
                                             eHeight={20}
                                             eWidth={20}
-                                            type={card.title}
-                                            style={{
-                                                position: "absolute",
-                                                transform: [
-                                                    { translateX: offsetX },
-                                                    { rotate: `${angle}deg` },
-                                                    { translateY: Math.abs(angle) * 1.5 } // Adds vertical arc effect
-                                                ],
-                                                zIndex: i, // Makes cards overlap correctly
-                                                shadowColor: "#000",
-                                                shadowOffset: { width: 0, height: 2 },
-                                                shadowOpacity: 0.25,
-                                                shadowRadius: 3.84,
-                                                elevation: 5,
-                                            }}
                                         />
                                     </TouchableHighlight>
                                 );
@@ -509,30 +510,30 @@ const styles = StyleSheet.create({
     cardContainer: {
         flexDirection: "row",
         position: "absolute",
-        bottom: "20%", // Adjust this value to move cards up
-        height: 470,
+        bottom: "5%", 
+        height:300,
         justifyContent: "center",
         width: "100%",
         alignItems: "center",
-        right:"7%"
-      },
+    },
     rightCardContainer: {
         // alignItems: 'center',
         // flexDirection: 'column',
 
-        // bottom: "50%",
+        bottom: "80%",
+        right: "5%"
         // alignItems: 'center'
     },
     leftCardContainer: {
         // alignItems: 'center',
         // flexDirection: 'column',
 
-        // bottom: "50%",
+        bottom: "80%",
         // alignItems: 'center'
     },
     clickedCardStyle: {
         position: 'absolute',
-        zIndex: 2,
+        zIndex: 10,
         // top: 20,
         bottom: "40%",
         left: "40%"
@@ -555,4 +556,4 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     }
 
-})
+});

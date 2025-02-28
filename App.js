@@ -13,6 +13,7 @@ import Commercial from './screens/Commercial';
 import Rights from './screens/Rights';
 import Profile from './screens/Profile';
 import Card from './components/Card';
+import DragNDrop from './screens/DragNDrop';
 import Learning from './screens/Learning';
 // import NotificationScreen from './screens/NotificationScreen';
 // import Login from './Login'
@@ -29,21 +30,22 @@ export default function App() {
     // <Login></Login>
     // <NotificationScreen></NotificationScreen>
     
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="SignUp">
-        <Stack.Screen name="Homepage" component={Homepage} options={{headerShown : false}}/>
-        <Stack.Screen name="SignUp" component={SignUp} options={{headerShown : false}}/>
-        <Stack.Screen name='CivicMastery' component={CivicMastery} options={{headerShown : false}}/>
-        <Stack.Screen name="Login" component={Login} options={{headerShown : false}}/>
-        <Stack.Screen name="Archives" component={Archives} options={{headerShown : false}}/>
-        <Stack.Screen name="Product" component={Product} options={{headerShown : false}}/>
-        <Stack.Screen name="Property" component={Property} options={{headerShown : false}}/>
-        <Stack.Screen name="Rights" component={Rights} options={{headerShown : false}}/>
-        <Stack.Screen name="Commercial" component={Commercial} options={{headerShown : false}}/>
-        <Stack.Screen name="Profile" component={Profile} options={{headerShown : false}}/>
-        <Stack.Screen name="Learning" component={Learning} options={{headerShown : false}}/>
-      </Stack.Navigator>
-     </NavigationContainer>
+    // <NavigationContainer>
+    //   <Stack.Navigator initialRouteName="SignUp">
+    //     <Stack.Screen name="Homepage" component={Homepage} options={{headerShown : false}}/>
+    //     <Stack.Screen name="SignUp" component={SignUp} options={{headerShown : false}}/>
+    //     <Stack.Screen name='CivicMastery' component={CivicMastery} options={{headerShown : false}}/>
+    //     <Stack.Screen name="Login" component={Login} options={{headerShown : false}}/>
+    //     <Stack.Screen name="Archives" component={Archives} options={{headerShown : false}}/>
+    //     <Stack.Screen name="Product" component={Product} options={{headerShown : false}}/>
+    //     <Stack.Screen name="Property" component={Property} options={{headerShown : false}}/>
+    //     <Stack.Screen name="Rights" component={Rights} options={{headerShown : false}}/>
+    //     <Stack.Screen name="Commercial" component={Commercial} options={{headerShown : false}}/>
+    //     <Stack.Screen name="Profile" component={Profile} options={{headerShown : false}}/>
+    //     <Stack.Screen name="Learning" component={Learning} options={{headerShown : false}}/>
+    //   </Stack.Navigator>
+    //  </NavigationContainer>
+    <DragNDrop></DragNDrop>
     // <CivicMastery></CivicMastery>
     // <Card height={500} width={300} eHeight={250} eWidth={200}></Card>
   );

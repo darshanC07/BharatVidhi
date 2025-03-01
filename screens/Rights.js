@@ -5,11 +5,11 @@ import Footer from '../components/Footer';
 
 export default function App() {
   const scrollViewRef = useRef(null)
-  useEffect(() => {
-    if (scrollViewRef.current) {
-      scrollViewRef.current.scrollToEnd({ animated: true });
-    }
-  }, [])
+  // useEffect(() => {
+  //   if (scrollViewRef.current) {
+  //     scrollViewRef.current.scrollToEnd({ animated: true });
+  //   }
+  // }, [])
   return (
     <SafeAreaView style={styles.container} ref={scrollViewRef}>
       <View style={{

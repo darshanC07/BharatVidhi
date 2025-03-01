@@ -11,7 +11,8 @@ import {
     Image,
     TouchableHighlight,
     TouchableWithoutFeedback,
-    TouchableOpacity
+    TouchableOpacity,
+    Alert
 } from "react-native";
 import * as ScreenOrientation from "expo-screen-orientation";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -53,6 +54,9 @@ export default function CivicMastery() {
     const [resultComponent, setResultComponent] = useState(null)
     const [result, isResult] = useState(false)
     const newCardListenerRef = useRef(false);
+    const [currectTurn, setCurrentTurn] = useState(null)
+    const [currentUserName, setCurrentUserName] = useState(null)
+    const hasGameStarted = useRef(false);
 
     // Get user session from AsyncStorage
     useEffect(() => {
@@ -83,7 +87,7 @@ export default function CivicMastery() {
                     const values = snapshot.val();
                     console.log("Fetched values:", values);
                     setCardDeck(Object.values(values.cardDeck || {}));
-                    setPlayerCount(playerCount + 1)
+                    hasGameStarted.current = true; // Mark game as started
                 } else {
                     setCardDeck([]); // Fallback in case no data exists
                 }
@@ -101,6 +105,14 @@ export default function CivicMastery() {
 
         fetchCardDeck();
     }, [user]);
+
+    // Check for winning condition
+    useEffect(() => {
+        if (hasGameStarted.current && cardDeck.length === 0) {
+            Alert.alert("You Won");
+            hasGameStarted.current = false; // Reset for the next game
+        }
+    }, [cardDeck]);
 
     // WebSocket Connection
     useEffect(() => {
@@ -120,32 +132,32 @@ export default function CivicMastery() {
 
     //funct for setting card counts of players
     function playerCardCount(data, i) {
-        let playersConnected
+        let playersConnected;
         if (i) {
-            playersConnected = data
-
+            playersConnected = data;
         } else {
-            playersConnected = data["playersConnected"]
+            playersConnected = data["playersConnected"];
         }
-        console.log("here ehgelo")
-        console.log("player connected data before : ", playersConnected)
+        console.log("Player connected data before:", playersConnected);
+
+        // Remove the current user from the list
         for (let i = 0; i < playersConnected.length; i++) {
             if (playersConnected[i]["uid"] === user.uid) {
-                playersConnected.splice(i, 1)
-                break
+                playersConnected.splice(i, 1);
+                break;
             }
         }
-        console.log("player connected data after : ", playersConnected)
+        console.log("Player connected data after:", playersConnected);
+
+        // Update card counts for other players
         for (let i = 0; i < playersConnected.length; i++) {
             if (i == 0) {
-                // console.log("here in second player")
-                setSecondPlayerCardCount(playersConnected[i]["cardCount"])
-            }
-            else if (i == 1) {
-                setThirdPlayerCardCount(playersConnected[i]["cardCount"])
-            }
-            else if (i == 2) {
-                setFourthPlayerCardCount(playersConnected[i]["cardCount"])
+                console.log("Updating second player card count:", playersConnected[i]["cardCount"]);
+                setSecondPlayerCardCount(playersConnected[i]["cardCount"]);
+            } else if (i == 1) {
+                setThirdPlayerCardCount(playersConnected[i]["cardCount"]);
+            } else if (i == 2) {
+                setFourthPlayerCardCount(playersConnected[i]["cardCount"]);
             }
         }
     }
@@ -167,6 +179,7 @@ export default function CivicMastery() {
             setCorrect(true)
             isResult(true)
             setResultComponent(<Result isCorrect={true} isWrong={false}></Result>)
+            // setClicked(false);
         } else {
             console.log("Wrong Answer!");
             setWrong(true)
@@ -184,6 +197,13 @@ export default function CivicMastery() {
         }
     }, [isWrong, isTimeRemained]);
 
+    useEffect(()=>{
+        if(isCorrect){
+            setClicked(false)
+            setRunning(false)
+            setWrong(false)
+        }
+    },[isCorrect])
     useEffect(() => {
         if (gameOver) {
             console.log("before adding : ", cardDeck.length)
@@ -234,6 +254,12 @@ export default function CivicMastery() {
             )
         })
 
+        socket.on("currentTurn", (data) => {
+            console.log("Received currentTurn event:", data);
+            setCurrentTurn(data.currectTurn);
+            setCurrentUserName(data.currentPlayerName);
+        });
+
         if (!newCardListenerRef.current) {
             socket.on("newCard", (data) => {
                 playerCardCount(data["roomData"], 1)
@@ -249,7 +275,7 @@ export default function CivicMastery() {
             });
             newCardListenerRef.current = true
         }
-    }, [socket, cardDeck])
+    }, [socket, cardDeck, currectTurn])
     // Handle screen orientation
     useEffect(() => {
         async function changeScreenOrientation() {
@@ -360,10 +386,28 @@ export default function CivicMastery() {
         }
     }, [time, running]);
 
+    useEffect(() => {
+        if (result) {
+            // Set a timeout to hide the resultComponent after 2 seconds
+            const timeout = setTimeout(() => {
+                isResult(false); // Hide the resultComponent
+            }, 2000); 
 
+            return () => clearTimeout(timeout);
+        }
+    }, [result]); // Run this effect whenever `result` changes
 
+    // Render the resultComponent conditionally
+    <View style={result ? styles.resultDisplay : { display: 'none' }}>
+        {resultComponent}
+    </View>
     return (
         <SafeAreaView style={styles.container}>
+            <View style={styles.turnMessageContainer}>
+                <Text style={styles.turnMessageText}>
+                    {currectTurn === user?.uid ? "Your turn" : `${currentUserName} is playing`}
+                </Text>
+            </View>
             <StatusBar hidden />
             <View style={clicledCard && clicked ? {
                 // flex: 1,
@@ -419,7 +463,8 @@ export default function CivicMastery() {
                                             elevation: 5,
                                         }}
                                         underlayColor="transparent"
-                                        onPress={() => handleCardClick(i)}
+                                        onPress={currectTurn === user.uid ? () => handleCardClick(i) : null} // Only allow press if it's the current player's turn
+                                        disabled={currectTurn !== user.uid}
                                     >
                                         <Card
                                             cardheight={180}
@@ -437,7 +482,7 @@ export default function CivicMastery() {
                 <View >
                     <Image source={require('../assets/civicMastery/rightBench.png')} style={{
                         position: 'absolute',
-                        left: '80%',
+                        left: '85%',
                         bottom: '10%',
                         opacity: 0.7
                     }}></Image>
@@ -489,10 +534,11 @@ export default function CivicMastery() {
             <View style={clicked && clicledCard ? styles.clickedCardStyle : { display: 'none' }}>
                 {clicledCard}
             </View>
-            <TouchableWithoutFeedback onPress={() => { isResult(false) }}>
-                <View style={result ? styles.resultDisplay : { display: 'none' }}>
-                    {resultComponent}
-                </View></TouchableWithoutFeedback>
+            {/* <TouchableWithoutFeedback onPress={() => { isResult(false) }}> */}
+            <View style={result ? styles.resultDisplay : { display: 'none' }}>
+                {resultComponent}
+            </View>
+            {/* </TouchableWithoutFeedback> */}
             <View style={running ? styles.timer : { display: 'none' }}> {running && <Text style={{ fontSize: 24 }}>Time: {time}s</Text>} </View>
         </SafeAreaView>
     )
@@ -516,7 +562,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         position: "absolute",
         bottom: "5%",
-        height: 300,
+        height: 200,
         justifyContent: "center",
         width: "100%",
         alignItems: "center",
@@ -524,9 +570,9 @@ const styles = StyleSheet.create({
     rightCardContainer: {
         // alignItems: 'center',
         // flexDirection: 'column',
-
+        // left:10,
         bottom: "80%",
-        right: "5%"
+        // right: "5%"
         // alignItems: 'center'
     },
     leftCardContainer: {
@@ -538,7 +584,7 @@ const styles = StyleSheet.create({
     },
     clickedCardStyle: {
         position: 'absolute',
-        zIndex: 10,
+        zIndex: 50,
         // top: 20,
         bottom: "40%",
         left: "40%"
@@ -559,6 +605,21 @@ const styles = StyleSheet.create({
         left: "45%",
         justifyContent: 'center',
         alignItems: 'center'
-    }
+    },
+    turnMessageContainer: {
+        // width:250,
+        position: 'absolute',
+        top: 130, // Adjust the position as needed
+        left: '39%',
+        // right: 0,
+        alignItems: 'center',
+        zIndex: 20, // Ensure it's above other elements
+    },
+    turnMessageText: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        color: 'white', // Adjust the color as needed
+        textAlign: 'center',
+    },
 
 });

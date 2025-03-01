@@ -75,11 +75,11 @@ export default function Learning() {
                     {image != 0 ?
                         <Image src={image} style={{
                             alignSelf: 'center',
-                            height: 250,
-                            width: 250,
+                            height: 180,
+                            width: 180,
                             resizeMode: 'contain',
-                            marginBottom: '5%',
-                            marginTop: '5%'
+                            // marginBottom: '5%',
+                            // marginTop: '5%'
                         }} /> : <View></View>
                     }
                     <Text style={{
@@ -223,11 +223,11 @@ export default function Learning() {
                 </View>
             </View>
             <ProgressBar progress={25}></ProgressBar>
-            <Text style={{
+            {/* <Text style={{
                 fontSize: 18,
                 textAlign: 'center',
                 fontFamily: 'PatrickHandSC_400Regular'
-            }}>Heading</Text>
+            }}>Heading</Text> */}
             {currentCard ?
                 <LearningCard
                     bgcolor={currentCard.color}

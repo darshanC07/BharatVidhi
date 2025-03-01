@@ -1,119 +1,211 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View , TouchableOpacity,SafeAreaView,Image, Platform, PixelRatio,ScrollView} from 'react-native';
-import Footer from '../components/Footer';
-import { useFonts, PatrickHandSC_400Regular } from '@expo-google-fonts/patrick-hand-sc';
+import { StatusBar } from "expo-status-bar";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  SafeAreaView,
+  Image,
+  ScrollView,
+  ActivityIndicator,
+} from "react-native";
+import Footer from "../components/Footer";
+import React, { useEffect, useState } from "react";
+import { useNavigation } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { db } from "../firebaseSetup";
+import { ref, onValue } from "firebase/database";
 
-const ProductCard = ({name, description, price, image, onPress }) => {
-    return (
-      <TouchableOpacity style={{
-        backgroundColor: 'rgba(255, 238, 221, 0.5)',
-        flexDirection: 'row',
-        borderRadius: 10,
-        padding: 10,
-        shadowColor: '#000',
-        shadowOffset: { width: 1, height: 1 },
-        shadowOpacity: 0.3,
-        shadowRadius: 3,
-        marginBottom : '4%'
-       }} onPress={() => navigation.navigate("Product")}>
-        <Image source={image} style={{height : 130, width : 102, justifyContent:'center'}} resizeMode="contain" />
-        <View style={{marginLeft: '10%', justifyContent : 'center'}}>
-            <Text style={{
-                fontSize: 18,
-                fontWeight: 'bold',
-                color : '#1D3557', 
-                marginBottom : 2
-                }}>
-                    {name}
-                </Text>
-            <Text style={{fontSize: 12, color:'#1D3557', marginBottom : 2}}>{description}</Text>
-            <View style={{
-                marginTop : '2%',
-                flexDirection : 'row',
-                alignItems : 'center'
-                }}>
-                <Text style={{
-                    fontSize: 16,
-                    fontWeight: 'bold',
-                    color: 'black', 
-                    textAlign : 'left',
-                    marginBottom : 2
-                    }}>PRICE: {price}
-                </Text>
-                <Image source={require('../assets/coins.png')} style={{height : 22, width : 22, marginLeft : '5%'}}></Image>
-            </View>
+const ProductCard = ({
+  name,
+  description,
+  price,
+  image,
+  quantity,
+  acquiredQuantity,
+  prod_id,
+  navigation,
+}) => {
+  return (
+    <TouchableOpacity
+      style={styles.productCard}
+      onPress={() =>
+        navigation.navigate("Product", {
+          p: {
+            name,
+            description,
+            price,
+            image,
+            quantity,
+            acquiredQuantity,
+            prod_id,
+          },
+        })
+      }
+    >
+      <Image
+        source={{ uri: image }}
+        style={styles.productImage}
+        resizeMode="contain"
+      />
+      <View style={styles.productInfo}>
+        <Text style={styles.productName}>{name}</Text>
+        <Text style={styles.productDescription}>{description}</Text>
+        <View style={styles.priceContainer}>
+          <Text style={styles.productPrice}>PRICE: {price}</Text>
+          <Image
+            source={require("../assets/coins.png")}
+            style={styles.coinImage}
+          />
         </View>
-      </TouchableOpacity>
-    );
+      </View>
+    </TouchableOpacity>
+  );
 };
 
-export default function Archives() {
+export default function Archives({ navigation }) {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [userUid, setUserUid] = useState(null);
+
+  useEffect(() => {
+    const fetchUserSession = async () => {
+      try {
+        const storedUser = await AsyncStorage.getItem("userSession");
+        if (storedUser) {
+          const parsedUser = JSON.parse(storedUser);
+          setUserUid(parsedUser.uid);
+        }
+      } catch (error) {
+        console.error("Error fetching user session:", error);
+      }
+    };
+    fetchUserSession();
+  }, []);
+
+  useEffect(() => {
+    if (!userUid) return;
+
+    const productsRef = ref(db, "products");
+    const unsubscribe = onValue(
+      productsRef,
+      (snapshot) => {
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          const productsArray = Object.entries(data).map(([id, product]) => ({
+            id,
+            ...product,
+            acquiredQuantity: product.user?.[userUid] || 0,
+          }));
+          console.log("Products:", productsArray);
+          setProducts(productsArray);
+        } else {
+          setProducts([]);
+        }
+        setLoading(false);
+      },
+      (error) => {
+        console.error("Error fetching products:", error);
+        setLoading(false);
+      }
+    );
+
+    return () => unsubscribe();
+  }, [userUid]);
+
+  if (loading) {
+    return (
+      <View style={styles.loaderContainer}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.container}>
-    <View style={{
-        height: 50,
-        flexDirection: "row",
-        verticalAlign:'top',
-        marginTop : '13%',
-        paddingRight: 20,
-        paddingLeft: 20
-    }}>
-        <Text style={{
-            fontSize: 25,
-            color : '#232ED1',
-            fontWeight : 'bold',
-            textAlign : 'left',
-        }}>BHARAT VIDHI</Text>
-
-        <View style={{
-            flex: 1,
-            justifyContent: 'space-around',
-            flexDirection: "row",
-            alignSelf: "stretch",
-            marginLeft : '16%'
-        }}>
-            <Image source={require('../assets/notification.png')} styles={{marginRight : '3%'}}></Image>
-            <Image source={require('../assets/coins.png')}></Image>
-            <Image source={require('../assets/profile.png')}></Image>
+      <View style={styles.header}>
+        <Text style={styles.title}>BHARAT VIDHI</Text>
+        <View style={styles.headerIcons}>
+          <Image source={require("../assets/notification.png")} />
+          <Image source={require("../assets/coins.png")} />
+          <Image source={require("../assets/profile.png")} />
         </View>
-    </View>
-    <Text style={styles.archives1}>ARCHIVES</Text>
-    <ScrollView style={styles.scroll}>
-        <ProductCard name={'NAME'} description={'DESCRIPTION -- --'} price={'15'} image={source=require('../assets/stamp.png')} />
-        <ProductCard name={'NAME'} description={'DESCRIPTION -- --'} price={'15'} image={source=require('../assets/Civil-Services.png')} />
-        <ProductCard name={'NAME'} description={'DESCRIPTION -- --'} price={'15'} image={source=require('../assets/stamp.png')} />
-        <ProductCard name={'NAME'} description={'DESCRIPTION -- --'} price={'15'} image={source=require('../assets/stamp.png')} />
-        <ProductCard name={'NAME'} description={'DESCRIPTION -- --'} price={'15'} image={source=require('../assets/stamp_2.jpg')} />
-        <ProductCard name={'NAME'} description={'DESCRIPTION -- --'} price={'15'} image={source=require('../assets/stamp.png')} />
-    </ScrollView>
-    <Footer></Footer>
+      </View>
+      <Text style={styles.archivesTitle}>ARCHIVES</Text>
+      <ScrollView style={styles.scroll}>
+        {products.map((product) => (
+          <ProductCard
+            key={product.id}
+            name={product.name}
+            description={product.description}
+            price={product.price}
+            image={product.image}
+            quantity={product.quantity}
+            acquiredQuantity={product.acquiredQuantity}
+            prod_id={product.prod_id}
+            navigation={navigation}
+          />
+        ))}
+      </ScrollView>
+      <Footer />
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-    archives1 : {
-        fontSize: 22,
-        color: "#080606",
-        textAlign: "center",
-        marginTop:'2%'
-    },
-    each : {
-        width : '90%',
-        height : '30%',
-        backgroundColor : '#FFEEDD',
-        borderRadius : 5
-    },
-    container: {
-        backgroundColor: 'white',
-        alignItems:'center',
-        width:'100%',
-        height:'100%',
-    },
-    scroll:{
-        width : 340,
-        borderRadius : 10,
-        marginTop : '5%',
-        marginBottom : '22%'
-    }
-    });
+  container: {
+    backgroundColor: "white",
+    alignItems: "center",
+    width: "100%",
+    height: "100%",
+  },
+  loaderContainer: { flex: 1, justifyContent: "center", alignItems: "center" },
+  header: {
+    height: 50,
+    flexDirection: "row",
+    marginTop: "13%",
+    paddingHorizontal: 20,
+  },
+  title: { fontSize: 25, color: "#232ED1", fontWeight: "bold" },
+  headerIcons: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "space-around",
+    marginLeft: "16%",
+  },
+  archivesTitle: {
+    fontSize: 22,
+    color: "#080606",
+    textAlign: "center",
+    marginTop: "2%",
+  },
+  scroll: {
+    width: 340,
+    borderRadius: 10,
+    marginTop: "5%",
+    marginBottom: "22%",
+  },
+  productCard: {
+    backgroundColor: "rgba(255, 238, 221, 0.5)",
+    flexDirection: "row",
+    borderRadius: 10,
+    padding: 10,
+    marginBottom: "4%",
+  },
+  productImage: { height: 130, width: 102 },
+  productInfo: { marginLeft: "10%", justifyContent: "center" },
+  productName: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#1D3557",
+    marginBottom: 2,
+  },
+  productDescription: { fontSize: 12, color: "#1D3557", marginBottom: 2 },
+  priceContainer: {
+    marginTop: "2%",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  productPrice: { fontSize: 16, fontWeight: "bold", color: "black" },
+  coinImage: { height: 22, width: 22, marginLeft: "5%" },
+});

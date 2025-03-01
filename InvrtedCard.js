@@ -19,7 +19,6 @@ export default function Card({ cardheight=250, cardwidth=150, question='....ques
             width: cardwidth,
             alignItems: 'center',
             justifyContent: 'center',
-            marginTop : '30%',
             alignSelf : 'center'
         },
       gradientBorder: {

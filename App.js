@@ -15,6 +15,7 @@ import Profile from './screens/Profile';
 import Card from './components/Card';
 import DragNDrop from './screens/DragNDrop';
 import Learning from './screens/Learning';
+import Gloss from './screens/Glossary';
 // import NotificationScreen from './screens/NotificationScreen';
 // import Login from './Login'
 
@@ -31,7 +32,7 @@ export default function App() {
     // <NotificationScreen></NotificationScreen>
     
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="DragNDrop">
+      <Stack.Navigator initialRouteName="Homepage">
         <Stack.Screen name="Homepage" component={Homepage} options={{headerShown : false}}/>
         <Stack.Screen name="SignUp" component={SignUp} options={{headerShown : false}}/>
         <Stack.Screen name='CivicMastery' component={CivicMastery} options={{headerShown : false}}/>
@@ -44,6 +45,7 @@ export default function App() {
         <Stack.Screen name="Profile" component={Profile} options={{headerShown : false}}/>
         <Stack.Screen name="Learning" component={Learning} options={{headerShown : false}}/>
         <Stack.Screen name="DragNDrop" component={DragNDrop} options={{headerShown : false}}/>
+        <Stack.Screen name="Glossary" component={Gloss} options={{headerShown : false}}/>
       </Stack.Navigator>
      </NavigationContainer>
     // <DragNDrop></DragNDrop>

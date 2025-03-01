@@ -14,15 +14,18 @@ const Result = ({isCorrect, isWrong}) => {
   }
   return (
     <View style={{
-      backgroundColor : 'rgba(0, 0, 0, 0.3)',
+      backgroundColor : 'white',
       alignItems : 'center',
       justifyContent : 'center',
       width : '100%',
-      height : '100%'
+      height : '100%',
+      borderRadius:10,
+      borderWidth:1
     }}>
       <Text style={{
         fontFamily : 'Itim_400Regular',
         fontSize : 24,
+        color:'black',
         textAlign : 'center'
       }}>{data}</Text>
     </View>

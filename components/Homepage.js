@@ -17,6 +17,7 @@ import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useEffect, useState } from "react";
 import * as ScreenOrientation from 'expo-screen-orientation';
+import DragNDrop from "../screens/DragNDrop";
 // import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 
 export default function Homepage() {

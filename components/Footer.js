@@ -44,28 +44,34 @@ export default function Footer() {
             paddingLeft: 20,
             paddingRight: 20,
         }}>
-            <TouchableWithoutFeedback onPress={() => { handlePress(1) 
+            <TouchableWithoutFeedback onPress={() => {
+                handlePress(1)
                 navigation.navigate('CivicMastery')
-             }} >
+            }} >
                 <View style={tabBar.icon1 ? styles.onClickStyle : styles.highLightEffect}>
                     <Image source={require('../assets/icon1.png')} style={styles.imageSize} />
                 </View>
             </TouchableWithoutFeedback>
-            <TouchableWithoutFeedback onPress={() => { handlePress(2) }} >
+            <TouchableWithoutFeedback onPress={() => { handlePress(2) 
+                navigation.navigate("Glossary")
+            }} >
                 <View style={tabBar.icon2 ? styles.onClickStyle : styles.highLightEffect}>
                     <Image source={require('../assets/icon2.png')} style={styles.imageSize} />
                 </View></TouchableWithoutFeedback>
-            <TouchableWithoutFeedback onPress={() => { handlePress(3)
+            <TouchableWithoutFeedback onPress={() => {
+                handlePress(3)
                 navigation.navigate("Homepage")
-             }} >
+            }} >
                 <View style={tabBar.icon3 ? styles.onClickStyle : styles.highLightEffect}>
                     <Image source={require('../assets/icon3.png')} style={styles.imageSize} />
                 </View></TouchableWithoutFeedback>
-            <TouchableWithoutFeedback onPress={() => { handlePress(4) }} >
+            <TouchableWithoutFeedback onPress={() => { handlePress(4)
+                 navigation.navigate("DragNDrop") }} >
                 <View style={tabBar.icon4 ? styles.onClickStyle : styles.highLightEffect}>
                     <Image source={require('../assets/icon4.png')} style={styles.imageSize} />
                 </View></TouchableWithoutFeedback>
-            <TouchableWithoutFeedback onPress={() => { handlePress(5) 
+            <TouchableWithoutFeedback onPress={() => {
+                handlePress(5)
                 navigation.navigate("Archives")
             }} >
                 <View style={tabBar.icon5 ? styles.onClickStyle : styles.highLightEffect}>

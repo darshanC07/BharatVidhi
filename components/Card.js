@@ -1,7 +1,7 @@
 import React from 'react'
 import { Dimensions, Platform, StyleSheet, StatusBar, Image } from 'react-native'
 import { Text, View } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
+// import { LinearGradient } from 'expo-linear-gradient';
 
 export default function Card({ cardheight, cardwidth, title, eHeight, eWidth, type ,style}) {
     const styles = StyleSheet.create({
@@ -27,12 +27,12 @@ export default function Card({ cardheight, cardwidth, title, eHeight, eWidth, ty
             justifyContent: 'center',
             padding : 10
         }}>
-            <LinearGradient
+            {/* <LinearGradient
                 colors={['#8A2BE2', '#FFFFFF']}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={[styles.gradientBorder, { height: cardheight, width: cardwidth, aspectRatio: 2/3 }]}
-            >
+            > */}
             <View style={{
                 borderRadius: 10,
                 backgroundColor: 'white',
@@ -57,7 +57,7 @@ export default function Card({ cardheight, cardwidth, title, eHeight, eWidth, ty
                     marginTop: 10,
                 }}>{title}</Text>
             </View>
-            </LinearGradient>
+            {/* </LinearGradient> */}
             </View>
         </View>
     )

@@ -250,7 +250,7 @@ export default function CivicMastery() {
             setCLickedCard(
                 <TouchableHighlight onPress={() => {
                     setClicked(false)
-                }}><OtherPlayerCard cardheight={250} cardwidth={150} title={cardData.name} correctOption={cardData.correctAnswer} question={cardData.content} eHeight={20} eWidth={20} options={cardData.isQuestion == "True" ? cardData.options : 0} handleOptionClick={(j) => { setClickedAnswer(true); checkAnswer(cardData.correctAnswer, j) }}></OtherPlayerCard></TouchableHighlight>
+                }} ><OtherPlayerCard cardheight={400} cardwidth={280} title={cardData.name} correctOption={cardData.correctAnswer} question={cardData.content} eHeight={20} eWidth={20} options={cardData.isQuestion == "True" ? cardData.options : 0} handleOptionClick={(j) => { setClickedAnswer(true); checkAnswer(cardData.correctAnswer, j) }}></OtherPlayerCard></TouchableHighlight>
             )
         })
 
@@ -411,7 +411,7 @@ export default function CivicMastery() {
             <StatusBar hidden />
             <View style={clicledCard && clicked ? {
                 // flex: 1,
-                backgroundColor: 'white',
+                backgroundColor: 'black',
                 height: screenHeight,
                 width: Dimensions.get('window').width + StatusBar.currentHeight,
                 position: 'absolute',
@@ -539,7 +539,10 @@ export default function CivicMastery() {
                 {resultComponent}
             </View>
             {/* </TouchableWithoutFeedback> */}
-            <View style={running ? styles.timer : { display: 'none' }}> {running && <Text style={{ fontSize: 24 }}>Time: {time}s</Text>} </View>
+            <View style={running ? styles.timer : { display: 'none' }}> {running && <Text style={{ fontSize: 18 }}><Image source={require("../assets/timer_.png")} style={{
+                height:20,
+                width:20
+            }}/> {time}s</Text>} </View>
         </SafeAreaView>
     )
 }
@@ -600,9 +603,9 @@ const styles = StyleSheet.create({
     },
     timer: {
         position: 'absolute',
-        zIndex: 15,
-        bottom: "40%",
-        left: "45%",
+        zIndex: 50,
+        bottom: "75%",
+        left: "33%",
         justifyContent: 'center',
         alignItems: 'center'
     },

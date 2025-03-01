@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useLayoutEffect , useRef} from "react";
+import React, { useState, useEffect, useLayoutEffect, useRef } from "react";
 import {
     Text,
     View,
@@ -9,7 +9,9 @@ import {
     BackHandler,
     ImageBackground,
     Image,
-    TouchableHighlight
+    TouchableHighlight,
+    TouchableWithoutFeedback,
+    TouchableOpacity
 } from "react-native";
 import * as ScreenOrientation from "expo-screen-orientation";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -18,6 +20,7 @@ import { io } from "socket.io-client";
 import { db } from "../firebaseSetup";
 import { onValue, ref, get } from "firebase/database";
 import Card from "../components/Card";
+import Result from "../components/Result";
 import CardDeck from "../components/CardDeck";
 import InvertedCard from "../components/InvertedCard"
 import OtherPlayerCard from "../components/OtherPlayerCard"
@@ -47,7 +50,10 @@ export default function CivicMastery() {
     const [isTimeRemained, setTimeRemained] = useState(false)
     const [gameOver, setGameOver] = useState(false);
     const timeEndedRef = useRef(false);
-    
+    const [resultComponent, setResultComponent] = useState(null)
+    const [result, isResult] = useState(false)
+    const newCardListenerRef = useRef(false);
+
     // Get user session from AsyncStorage
     useEffect(() => {
         const fetchUser = async () => {
@@ -66,7 +72,7 @@ export default function CivicMastery() {
 
     // Fetch card deck data from Firebase when user is set
     useEffect(() => {
-        if (!user) return; // Ensure user is available
+        if (!user) return;
 
         const fetchCardDeck = async () => {
             try {
@@ -156,29 +162,33 @@ export default function CivicMastery() {
         console.log("Correct:", correctOption, "Clicked:", clickedOption);
 
         if (correctOption == clickedOption) {
-            console.log("✅ Correct Answer! Points:", totalPoints + 5);
+            console.log("Correct Answer! Points:", totalPoints + 5);
             setTotalPoints(prevPoints => prevPoints + 5);
-            // setWrong(false)
             setCorrect(true)
+            isResult(true)
+            setResultComponent(<Result isCorrect={true} isWrong={false}></Result>)
         } else {
-            console.log("❌ Wrong Answer!");
-            // setCorrect(false)
+            console.log("Wrong Answer!");
             setWrong(true)
+            // setGameOver(true)
+            isResult(true)
+            setResultComponent(<Result isCorrect={false} isWrong={true}></Result>)
         }
 
         setClickedAnswer(false);
     }
 
     useEffect(() => {
-        if ( isWrong || isTimeRemained) {
+        if (isWrong || isTimeRemained) {
             setGameOver(true);
         }
-    }, [ isWrong, isTimeRemained]);
-    
+    }, [isWrong, isTimeRemained]);
+
     useEffect(() => {
         if (gameOver) {
-            socket.emit("getCard", { uid: user.uid, cardCount: cardDeck.length + 1 });
-    
+            console.log("before adding : ", cardDeck.length)
+            socket.emit("getCard", { uid: user.uid, cardCount: cardDeck.length });
+
             setWrong(false);
             setTimeRemained(false);
             setRunning(false);
@@ -224,18 +234,21 @@ export default function CivicMastery() {
             )
         })
 
-        socket.on("newCard", (data) => {
-            playerCardCount(data["roomData"], 1)
+        if (!newCardListenerRef.current) {
+            socket.on("newCard", (data) => {
+                playerCardCount(data["roomData"], 1)
 
-            if (data["playerData"]["uid"] == user.uid) {
-                console.log("currect cards : ", cardDeck)
-                setCardDeck((prevDeck) => [...prevDeck, data["newCard"][1]]);
-                // tempCardDeck.push(data["newCard"])
-                console.log("after cards : ", cardDeck)
-                // setCardDeck(cardDeck)
+                if (data["playerData"]["uid"] == user.uid) {
+                    console.log("currect cards : ", cardDeck)
+                    setCardDeck((prevDeck) => [...prevDeck, data["newCard"][1]]);
+                    // tempCardDeck.push(data["newCard"])
+                    console.log("after cards : ", cardDeck)
+                    // setCardDeck(cardDeck)
 
-            }
-        })
+                }
+            });
+            newCardListenerRef.current = true
+        }
     }, [socket, cardDeck])
     // Handle screen orientation
     useEffect(() => {
@@ -317,6 +330,7 @@ export default function CivicMastery() {
 
 
     function handleCardClick(i) {
+        console.log("clicked")
         setClicked(true)
         setCLickedCard(
             <TouchableHighlight ><InvertedCard cardheight={250} cardwidth={150} title={cardDeck[i].name} correctOption={cardDeck[i].correctAnswer} question={cardDeck[i].content} eHeight={20} eWidth={20} options={cardDeck[i].isQuestion == "True" ? cardDeck[i].options : 0} handleCancel={handleCancel} handleOK={() => handleOK(cardDeck[i], i)}></InvertedCard></TouchableHighlight>
@@ -336,22 +350,17 @@ export default function CivicMastery() {
 
     useEffect(() => {
         if (time === 0 && running && !timeEndedRef.current) {
-            timeEndedRef.current = true; 
+            timeEndedRef.current = true;
             setRunning(false);
             setClicked(false);
             setTimeRemained(true);
             setTimeout(() => {
-                timeEndedRef.current = false; 
+                timeEndedRef.current = false;
             }, 100);
         }
     }, [time, running]);
 
 
-
-
-    // if(time===0){
-    //     socket.emit("getCard", { uid: user.uid, cardCount: cardDeck.length + 1 });
-    // }
 
     return (
         <SafeAreaView style={styles.container}>
@@ -388,9 +397,40 @@ export default function CivicMastery() {
                         alignItems: 'center'
                     }}>
                         <View style={styles.cardContainer}>
-                            {cardDeck.map((card, i) => (
-                                <TouchableHighlight onPress={() => handleCardClick(i)}><Card cardheight={150} cardwidth={100} title={card.name} eHeight={20} eWidth={20} type={card.title} key={i}></Card></TouchableHighlight>
-                            ))}
+                            {cardDeck.map((card, i) => {
+                                const angle = (i - (cardDeck.length - 1) / 2) * 4; // Reduced angle for subtler curve
+                                const offsetX = (i - (cardDeck.length - 1) / 2) * 74; // More horizontal spacing
+
+                                return (
+                                    <TouchableHighlight
+                                        key={i}
+                                        style={{
+                                            position: "absolute",
+                                            transform: [
+                                                { rotate: `${angle}deg` },
+                                                { translateX: offsetX },
+                                                { translateY: Math.abs(angle) * 2.4 } // Adds vertical arc effect
+                                            ],
+                                            zIndex: i + 1, // Makes cards overlap correctly
+                                            shadowColor: "#000",
+                                            shadowOffset: { width: 0, height: 2 },
+                                            shadowOpacity: 0.25,
+                                            shadowRadius: 3.84,
+                                            elevation: 5,
+                                        }}
+                                        underlayColor="transparent"
+                                        onPress={() => handleCardClick(i)}
+                                    >
+                                        <Card
+                                            cardheight={180}
+                                            cardwidth={120}
+                                            title={card.name}
+                                            eHeight={20}
+                                            eWidth={20}
+                                        />
+                                    </TouchableHighlight>
+                                );
+                            })}
                         </View>
                     </View>
                 </View>
@@ -449,6 +489,10 @@ export default function CivicMastery() {
             <View style={clicked && clicledCard ? styles.clickedCardStyle : { display: 'none' }}>
                 {clicledCard}
             </View>
+            <TouchableWithoutFeedback onPress={() => { isResult(false) }}>
+                <View style={result ? styles.resultDisplay : { display: 'none' }}>
+                    {resultComponent}
+                </View></TouchableWithoutFeedback>
             <View style={running ? styles.timer : { display: 'none' }}> {running && <Text style={{ fontSize: 24 }}>Time: {time}s</Text>} </View>
         </SafeAreaView>
     )
@@ -468,34 +512,41 @@ const styles = StyleSheet.create({
         bottom: 0,
         left: '3.6%',
     },
-    card: {
-        position: "absolute",
-        // bottom: '90%',
-        left: '7%'
-    },
     cardContainer: {
-        flexDirection: 'row',
-        bottom: "30%",
-        alignItems: 'center'
-        // left: '50%'
+        flexDirection: "row",
+        position: "absolute",
+        bottom: "5%",
+        height: 300,
+        justifyContent: "center",
+        width: "100%",
+        alignItems: "center",
     },
     rightCardContainer: {
         // alignItems: 'center',
         // flexDirection: 'column',
 
-        // bottom: "50%",
+        bottom: "80%",
+        right: "5%"
         // alignItems: 'center'
     },
     leftCardContainer: {
         // alignItems: 'center',
         // flexDirection: 'column',
 
-        // bottom: "50%",
+        bottom: "80%",
         // alignItems: 'center'
     },
     clickedCardStyle: {
         position: 'absolute',
-        zIndex: 2,
+        zIndex: 10,
+        // top: 20,
+        bottom: "40%",
+        left: "40%"
+
+    },
+    resultDisplay: {
+        position: 'absolute',
+        zIndex: 12,
         // top: 20,
         bottom: "40%",
         left: "40%"
@@ -503,11 +554,11 @@ const styles = StyleSheet.create({
     },
     timer: {
         position: 'absolute',
-        zIndex: 3,
+        zIndex: 15,
         bottom: "40%",
         left: "45%",
         justifyContent: 'center',
         alignItems: 'center'
     }
 
-})
+});

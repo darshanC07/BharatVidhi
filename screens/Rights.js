@@ -1,15 +1,18 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TouchableWithoutFeedback, SafeAreaView, Image, Platform, PixelRatio, ScrollView, TouchableOpacity, ImageBackground } from 'react-native';
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { useRef, useEffect } from 'react';
 import Footer from '../components/Footer';
 
 export default function App() {
-  const scrollViewRef = useRef(null)
+  const navigation = useNavigation()
+  const scrollViewRef = useRef(null);
+
   // useEffect(() => {
   //   if (scrollViewRef.current) {
   //     scrollViewRef.current.scrollToEnd({ animated: true });
   //   }
-  // }, [])
+  // }, []);
   return (
     <SafeAreaView style={styles.container} ref={scrollViewRef}>
       <View style={{
@@ -39,7 +42,7 @@ export default function App() {
           <Image source={require('../assets/profile.png')} styles={[styles.icon, { height: 40, width: 40 }]}></Image>
         </View>
       </View>
-      <ScrollView style={styles.scroll}>
+      <ScrollView style={styles.scroll} ref={scrollViewRef}>
         <ImageBackground source={require('../assets/R8.png')} style={styles.each}>
           <TouchableOpacity>
             <View style={[styles.point, { top: 650, left: 130 }]} onPress={() => navigation.navigate('Welcome.js')}></View>
@@ -69,28 +72,58 @@ export default function App() {
             <View style={[styles.point, { top: 620, left: 120 }]} onPress={() => navigation.navigate('Welcome.js')}></View>
           </TouchableOpacity>
           <TouchableOpacity>
-            <View style={[styles.point, { top: 245, left: 200 }]} onPress={() => navigation.navigate('Welcome.js')}></View>
+            <View style={[styles.point, { top: 245, left: 200 }]} onPress={() => {
+          console.log("clicked"); navigation.navigate('Learning', {
+            map: "rights",
+            node: 5
+          })
+        }}></View>
           </TouchableOpacity>
         </ImageBackground>
         <ImageBackground source={require('../assets/R4.png')} style={styles.each}><TouchableOpacity>
-          <View style={[styles.point, { top: 415, left: 230 }]} onPress={() => navigation.navigate('Welcome.js')}></View>
+          <View style={[styles.point, { top: 415, left: 230 }]} onPress={() => {
+          console.log("clicked"); navigation.navigate('Learning', {
+            map: "rights",
+            node: 4
+          })
+        }}></View>
         </TouchableOpacity>
         </ImageBackground>
         <ImageBackground source={require('../assets/R3.png')} style={styles.each}>
           <TouchableOpacity>
-            <View style={[styles.point, { top: 255, left: 128 }]} onPress={() => navigation.navigate('Welcome.js')}></View>
+            <View style={[styles.point, { top: 255, left: 128 }]} onPress={() => {
+              console.log("clicked"); navigation.navigate('Learning', {
+                map: "rights",
+                node: 3
+              })
+            }}></View>
           </TouchableOpacity>
         </ImageBackground>
         <ImageBackground source={require('../assets/rights2.png')} style={styles.each}>
           <TouchableOpacity>
-            <View style={[styles.point, { top: 465, left: 125 }]} onPress={() => navigation.navigate('Welcome.js')}></View>
+            <View style={[styles.point, { top: 465, left: 125 }]} onPress={() => {
+              console.log("clicked"); navigation.navigate('Learning', {
+                map: "rights",
+                node: 2
+              })
+            }}></View>
           </TouchableOpacity>
           <TouchableOpacity>
-            <View style={[styles.point, { top: -56, left: 199 }]} onPress={() => navigation.navigate('Welcome.js')}></View>
+            <View style={[styles.point, { top: -56, left: 199 }]} onPress={() => {
+              console.log("clicked"); navigation.navigate('Learning', {
+                map: "rights",
+                node: 1
+              })
+            }}></View>
           </TouchableOpacity>
         </ImageBackground>
-        <ImageBackground source={require('../assets/rights1.png')} style={styles.each}><TouchableOpacity>
-          <View style={[styles.point, { top: 220, left: 40 }]} onPress={() => navigation.navigate('Welcome.js')}></View>
+        <ImageBackground source={require('../assets/rights1.png')} style={styles.each}><TouchableOpacity onPress={() => {
+          console.log("clicked"); navigation.navigate('Learning', {
+            map: "rights",
+            node: 0
+          })
+        }}>
+          <View style={[styles.point, { top: 220, left: 40 }]} ></View>
         </TouchableOpacity>
         </ImageBackground>
       </ScrollView>

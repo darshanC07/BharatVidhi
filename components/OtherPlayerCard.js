@@ -28,7 +28,7 @@ export default function Card({ cardheight, cardwidth, question, correctOption, e
 
             <View style={{
                 flexDirection: 'row',
-                flexWrap: 'wrap', // Allows items to wrap to the next row
+                flexWrap: 'wrap', 
                 justifyContent: 'space-around'
             }}>
                 {options != 0 ?

@@ -16,7 +16,7 @@ export default function Login() {
         const userSession = await AsyncStorage.getItem("userSession");
         if (userSession) {
           setUser(userSession)
-          navigation.replace("Homepage");
+          navigation.replace("Welcome");
         }
       };
 
@@ -65,7 +65,7 @@ export default function Login() {
         // console.log("inside login")
         await AsyncStorage.setItem("userSession", JSON.stringify(data.user));
         console.log("setting user : ",JSON.stringify(data.user))
-        navigation.replace("Homepage");
+        navigation.replace("Welcome");
         setUser(JSON.stringify(data.user))
         Alert.alert("Success", data.message);
       } else {

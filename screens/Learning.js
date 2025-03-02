@@ -7,6 +7,7 @@ import { onValue, ref, get } from "firebase/database";
 import { useRoute } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
 import CardDeck from '../components/CardDeck';
+import Options from '../components/Options';
 
 
 const propertyCards = ['#298EFF', '#FF8B73', '#32DAF9'];
@@ -49,6 +50,10 @@ export default function Learning() {
     };
 
     const LearningCard = ({ image, description, title, bgcolor, options, correctOption }) => {
+        // const [fontsLoaded] = useFonts({
+        //         LexendGiga_400Regular,
+        //         Lexend_800ExtraBold
+        //     });
         // console.log(options)
         // console.log(correctOption)
         return (
@@ -100,16 +105,18 @@ export default function Learning() {
                             }}>
                                 {options.map((option, i) => (
 
-                                    <TouchableWithoutFeedback onPress={() => {
-                                        console.log(i)
-                                        if (i  == correctOption) {
-                                            console.log("correct answer")
-                                            setIndex(index=>index+1)
-                                        } else {
-                                            console.log("wrong answer")
-                                        }
-                                    }}>
-                                        <View style={{
+                                    <TouchableWithoutFeedback style={{
+                                        width : '95%',
+                                        backgroundColor : '#8FDAFF',
+                                        alignItems : 'center',
+                                        alignSelf : 'center',
+                                        flexDirection : 'row',
+                                        borderRadius : 15,
+                                        marginBottom : '5%',
+                                        padding : 12,
+                                        flexWrap : 'wrap'
+                                    }} >
+                                        {/* <View style={{
                                             height: 60,
                                             width: "100%",
                                             padding: 10,
@@ -120,7 +127,11 @@ export default function Learning() {
                                         }}><Text key={i} style={{
                                             fontSize: 15,
                                             color: "black"
-                                        }}>{option}</Text></View></TouchableWithoutFeedback>
+                                        }}>{option}</Text></View> */}
+                                        <Options text={option} index=
+                                        {i} currentCardIndex={index} isCorrect={correctOption}
+                                        handleCorrect={(num)=>{setIndex(num)}} ></Options>
+                                        </TouchableWithoutFeedback>
                                 ))}</View> : <View></View>
                     }
                     <TouchableOpacity
@@ -163,13 +174,16 @@ export default function Learning() {
             </View >
         );
     };
+    const [length,setlength] = useState(0)
 
     async function getData() {
+        
         const cardRef = ref(db, `/modules/${map}/${node}/cards`);
         const snapshot = await get(cardRef);
         if (snapshot.exists()) {
             const values = snapshot.val();
             // console.log("values : ", values)
+            setlength(values.length)
             setModuleCards(values)
         }
 
@@ -183,10 +197,10 @@ export default function Learning() {
             setCurrentCard(moduleCards[`card${index}`])
         }
     }, [moduleCards, index])
-    const [fontsLoaded] = useFonts({
-        PatrickHandSC_400Regular,
-        Itim_400Regular,
-    });
+    // const [fontsLoaded] = useFonts({
+    //     PatrickHandSC_400Regular,
+    //     Itim_400Regular,
+    // });
     return (
         <View style={{
             flex: 1
@@ -222,7 +236,7 @@ export default function Learning() {
                     </View>
                 </View>
             </View>
-            <ProgressBar progress={25}></ProgressBar>
+            <ProgressBar progress={(index/length)*100}></ProgressBar>
             {/* <Text style={{
                 fontSize: 18,
                 textAlign: 'center',

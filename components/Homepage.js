@@ -10,7 +10,7 @@ import {
   Platform,
   StatusBar,
   TouchableWithoutFeedback
-  , ImageBackground
+  , ImageBackground, useFonts,TouchableOpacity
 } from "react-native";
 import Footer from "./Footer";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
@@ -21,6 +21,10 @@ import DragNDrop from "../screens/DragNDrop";
 // import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 
 export default function Homepage() {
+  // const [fontsLoaded] = useFonts({
+  //             PatrickHandSC_400Regular,
+  //             Itim_400Regular,
+  //     });
   const navigation = useNavigation()
   const [user, setUser] = useState(null);
   const [orientation, setOrientation] = useState()
@@ -98,21 +102,23 @@ export default function Homepage() {
             color: '#232ED1',
             fontWeight: 'bold',
             textAlign: 'left',
-          }}>BHARAT VIDHI</Text>
+          }}>BHARAT विधि</Text>
 
           <View
             style={{
               flex: 1,
               justifyContent: "space-around",
               flexDirection: "row",
-              alignSelf: "stretch",
+              paddingLeft:40,
+              paddingRight:5
+              // alignSelf: "stretch",
             }}
           >
             <Image source={require("../assets/notification.png")} />
-            <Image source={require("../assets/coins.png")} />
+            <TouchableOpacity ><Image source={require("../assets/coins.png")} /></TouchableOpacity>
             <Image
               source={require("../assets/profile.png")}
-              onTouchEnd={()=>{
+              onTouchEnd={() => {
                 navigation.navigate("Profile")
               }
               }
@@ -128,17 +134,24 @@ export default function Homepage() {
             borderBottomLeftRadius: 50,
           }}
         >
-          <Image source={require("../assets/Owl.png")} style={styles.owl} />
+          <Image source={require("../assets/Owl.png")} style={{
+            width: 65,
+            height: 80,
+            position: 'absolute',
+            alignSelf: 'flex-start',
+            marginTop: '12%',
+            marginLeft: '2%'
+          }} />
+          <Text style={{ color: '#A84949', fontFamily: "Itim_400Regular", marginLeft: '25%', fontSize: 17, padding: 10 }}>Traveler, every step you take shapes justice—venture forth and leave your mark!</Text>
         </View>
 
         <View>
-          <Text
-            style={{
-              fontSize: 20,
-            }}
-          >
-            Sections
-          </Text>
+          <Text style={{
+            fontSize: 20,
+            marginTop: '3%',
+            marginBottom: '2%',
+            fontFamily: 'PatrickHandSC_400Regular'
+          }}>SECTIONS</Text>
         </View>
         <ScrollView
           style={{
@@ -221,6 +234,23 @@ export default function Homepage() {
               fontWeight: '800',
               color: 'white'
             }}>COMMERCIAL</Text></TouchableWithoutFeedback></ImageBackground></TouchableWithoutFeedback>
+          {/* <TouchableOpacity style={{
+            borderRadius: 15
+          }}> */}
+            <ImageBackground source={require('../assets/loading.png')} style={{
+              resizeMode: 'cover',
+              height: 120,
+              marginBottom: 10,
+              justifyContent: 'center',
+
+            }}><Text style={{
+              textAlign: 'center',
+              fontSize: 18,
+              fontWeight: '800',
+              color: 'white',
+              fontFamily: 'Itim_400Regular'
+            }}>MORE MAPS COMING SOON</Text></ImageBackground>
+          {/* </TouchableOpacity> */}
         </ScrollView>
       </View>
       <Footer></Footer>

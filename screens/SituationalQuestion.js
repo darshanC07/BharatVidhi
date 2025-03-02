@@ -88,7 +88,7 @@ export default function Learning() {
                         alignSelf: "stretch",
                         marginRight : '2%'
                     }}>
-                        <Image source={require('../assets/notification.png')} />
+                        <Image source={require('../assets/icon1.png')} />
                         <Image source={require('../assets/coins.png')} />
                         <Image source={require('../assets/profile.png')} />
                     </View>

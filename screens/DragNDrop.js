@@ -1035,7 +1035,7 @@ export default function DragNDrop() {
         {/* Additional content could go here if needed */}
       </ScrollView>
 
-      <Footer />
+      <Footer style={{zIndex:1005}}></Footer>
     </View>
   );
 }

@@ -118,10 +118,10 @@ export default function Profile() {
                                 <Text style={{ fontSize: 12, color: '#A4AED3', fontFamily: 'Itim_400Regular' }}>Badges</Text>
                             </View>
                             <View style={styles.score}>
-                                <Text style={{ fontSize: 24, left: 20, fontFamily: 'Iceland_400Regular', marginTop: 10,color:'white' }}>Statistics</Text>
+                                <Text style={{ fontSize: 24, left: 20, fontFamily: 'Iceland_400Regular', marginTop: 10,color:'white',height:20 }}>Statistics</Text>
                                 <View style={{ flexDirection: 'row', gap: 20, paddingLeft: 30 }} >
                                     <Image source={require('../assets/Pie chart.png')} style={{ height: 111, width: 111 }} />
-                                    <View style={{ height: '70%', width: '50%', backgroundColor: '#B4BEFB', borderRadius: 15, paddingLeft: 10 }}>
+                                    <View style={{ height: '90%', width: '50%', backgroundColor: '#B4BEFB', borderRadius: 15, padding:10 }}>
                                         <Text style={{ fontFamily: 'Iceland_400Regular', alignSelf: 'center', lineHeight: 25,fontSize:15 }}>User stats</Text>
                                         <Text style={{ fontFamily: 'Iceland_400Regular', lineHeight: 15,fontSize:15 }}>Time Spent :0</Text>
                                         <Text style={{ fontFamily: 'Iceland_400Regular', lineHeight: 15 ,fontSize:15}}>Average Daily Usage:0 </Text>
@@ -146,7 +146,7 @@ export default function Profile() {
                                     </View>
                                 </View>
                                 <View style={{ flexDirection: 'row', gap: 20, paddingLeft: 30 }}>
-                                    <View style={{ height: '70%', width: '50%', backgroundColor: '#B4BEFB', borderRadius: 15, paddingLeft: 10 }}>
+                                    <View style={{ height: '80%', width: '50%', backgroundColor: '#B4BEFB', borderRadius: 15, padding:8 }}>
                                         <Text style={{ fontFamily: 'Iceland_400Regular', alignSelf: 'center', lineHeight: 25,fontSize:15 }}>Civic mastery stats</Text>
                                         <Text style={{ fontFamily: 'Iceland_400Regular', lineHeight: 15 ,fontSize:15}}>Total Games played :0</Text>
                                         <Text style={{ fontFamily: 'Iceland_400Regular', lineHeight: 15 ,fontSize:15}}>Games won:0 </Text>
@@ -275,7 +275,7 @@ const styles = StyleSheet.create({
     score: {
 
         top: 120,
-        height: 500,
+        height: 520,
         width: 350,
         gap: 50,
         backgroundColor: '#4C66F8',

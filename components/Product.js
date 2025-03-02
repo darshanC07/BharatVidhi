@@ -133,7 +133,7 @@ export default function Product({ route }) {
         <Text style={styles.headerText}>BHARAT VIDHI</Text>
         <View style={styles.iconRow}>
           <Image
-            source={require("../assets/notification.png")}
+            source={require("../assets/icon1.png")}
             style={styles.icon}
           />
           <Image source={require("../assets/coins.png")} style={styles.icon} />

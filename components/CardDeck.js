@@ -17,10 +17,11 @@ const CardDeck = ({ count, degree }) => {
                         key={i}
                         cardheight={90}
                         cardwidth={70}
-                        title={"temp"}
-                        eHeight={20}
-                        eWidth={20}
-                        type={"hi"}
+                        // title={"tem"}
+                        eHeight={10}
+                        eWidth={10}
+                        // type={"hi"}
+                        other={true}
                         style={{
                             position: 'absolute',
                             transform: [
@@ -42,6 +43,7 @@ const styles = StyleSheet.create({
         position: 'relative',
         width: 150,
         height: 150,
+        zIndex:45,
         justifyContent: 'center',
         alignItems: 'center'
     }

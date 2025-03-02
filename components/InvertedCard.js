@@ -73,7 +73,7 @@ export default function Card({ cardheight, cardwidth, question, correctOption, e
                             <View style={{
                                 alignItems: 'center',
                                 justifyContent: 'center',
-                                width:125
+                                width:140
                             }}>
                                 <Image source={require('../assets/module.png')} style={{ height: '45%', width: '40%', alignSelf: 'center' }} />
                                 <Text style={{ marginRight: '3%', fontFamily: 'Lekton_400Regular', color: '#B50714',fontSize:18}}>{title}</Text>
@@ -87,7 +87,7 @@ export default function Card({ cardheight, cardwidth, question, correctOption, e
                                 backgroundColor: '#E0DDDD',
                                 borderRadius: 5,
                                 padding: 7,
-                                width:240
+                                width:220
                             }}>{question}</Text>
                         </View>
 

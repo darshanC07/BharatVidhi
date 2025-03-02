@@ -57,6 +57,7 @@ export default function CivicMastery() {
     const [currectTurn, setCurrentTurn] = useState(null)
     const [currentUserName, setCurrentUserName] = useState(null)
     const hasGameStarted = useRef(false);
+    const [won, setWon] = useState(false)
 
     // Get user session from AsyncStorage
     useEffect(() => {
@@ -110,7 +111,9 @@ export default function CivicMastery() {
     useEffect(() => {
         if (hasGameStarted.current && cardDeck.length === 0) {
             Alert.alert("You Won");
+            socket.emit("playerWon", { "username": user.name })
             hasGameStarted.current = false; // Reset for the next game
+            navigation.navigate("Homepage")
         }
     }, [cardDeck]);
 
@@ -197,13 +200,13 @@ export default function CivicMastery() {
         }
     }, [isWrong, isTimeRemained]);
 
-    useEffect(()=>{
-        if(isCorrect){
+    useEffect(() => {
+        if (isCorrect) {
             setClicked(false)
             setRunning(false)
             setWrong(false)
         }
-    },[isCorrect])
+    }, [isCorrect])
     useEffect(() => {
         if (gameOver) {
             console.log("before adding : ", cardDeck.length)
@@ -248,9 +251,7 @@ export default function CivicMastery() {
             setTime(10)
             setRunning(true)
             setCLickedCard(
-                <TouchableHighlight onPress={() => {
-                    setClicked(false)
-                }} ><OtherPlayerCard cardheight={400} cardwidth={280} title={cardData.name} correctOption={cardData.correctAnswer} question={cardData.content} eHeight={20} eWidth={20} options={cardData.isQuestion == "True" ? cardData.options : 0} handleOptionClick={(j) => { setClickedAnswer(true); checkAnswer(cardData.correctAnswer, j) }}></OtherPlayerCard></TouchableHighlight>
+                <TouchableHighlight ><OtherPlayerCard cardheight={400} cardwidth={280} title={cardData.name} correctOption={cardData.correctAnswer} question={cardData.content} eHeight={20} eWidth={20} options={cardData.isQuestion == "True" ? cardData.options : 0} handleOptionClick={(j) => { setClickedAnswer(true); checkAnswer(cardData.correctAnswer, j) }}></OtherPlayerCard></TouchableHighlight>
             )
         })
 
@@ -259,6 +260,11 @@ export default function CivicMastery() {
             setCurrentTurn(data.currectTurn);
             setCurrentUserName(data.currentPlayerName);
         });
+
+        socket.on("otherPLayerWon", (data) => {
+            console.log("won ", data.userName)
+            setWon(data.userName)
+        })
 
         if (!newCardListenerRef.current) {
             socket.on("newCard", (data) => {
@@ -391,16 +397,118 @@ export default function CivicMastery() {
             // Set a timeout to hide the resultComponent after 2 seconds
             const timeout = setTimeout(() => {
                 isResult(false); // Hide the resultComponent
-            }, 2000); 
+            }, 2000);
 
             return () => clearTimeout(timeout);
         }
     }, [result]); // Run this effect whenever `result` changes
 
     // Render the resultComponent conditionally
-    <View style={result ? styles.resultDisplay : { display: 'none' }}>
-        {resultComponent}
-    </View>
+    // <View style={result ? styles.resultDisplay : { display: 'none' }}>
+    //     {resultComponent}
+    // </View>
+    const styles = StyleSheet.create({
+        container: {
+            // marginTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+            // backgroundColor: 'lightblue'
+        },
+        gameBg: {
+            height: Dimensions.get('window').height + 10,
+            width: Dimensions.get('window').width + 55
+        },
+        bench: {
+            position: 'absolute',
+            bottom: 0,
+            left: '3.6%',
+        },
+        cardContainer: {
+            flexDirection: "row",
+            position: "absolute",
+            bottom: "5%",
+            height: 210,
+            justifyContent: "center",
+            width: "100%",
+            alignItems: "center",
+        },
+        rightCardContainer: {
+            // alignItems: 'center',
+            // flexDirection: 'column',
+            // left:10,
+            bottom: "80%",
+            // right: "5%"
+            // alignItems: 'center'
+        },
+        leftCardContainer: {
+            // alignItems: 'center',
+            // flexDirection: 'column',
+
+            bottom: "80%",
+            // alignItems: 'center'
+        },
+        clickedCardStyle: {
+            position: 'absolute',
+            zIndex: 50,
+            // top: 20,
+            bottom: "30%",
+            left: "30%"
+
+        },
+        resultDisplay: {
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            height: screenHeight,
+            width: Dimensions.get('window').width + StatusBar.currentHeight,
+            position: 'absolute',
+            // zIndex: 1,
+            // opacity: 0.5,
+            position: 'absolute',
+            zIndex: 12,
+            // top: 20,
+
+            // bottom: "40%",
+            // left: "40%"
+
+        },
+        won: {
+            backgroundColor: 'rgba(0,0,0,1)',
+            height: screenHeight,
+            width: Dimensions.get('window').width + StatusBar.currentHeight,
+            position: 'absolute',
+            // zIndex: 1,
+            // opacity: 0.5,
+            position: 'absolute',
+            zIndex: 12,
+            // top: 20,
+
+            // bottom: "40%",
+            // left: "40%"
+
+        },
+        timer: {
+            position: 'absolute',
+            zIndex: 50,
+            bottom: "75%",
+            left: "33%",
+            justifyContent: 'center',
+            alignItems: 'center'
+        },
+        turnMessageContainer: {
+            // width:250,
+            position: 'absolute',
+            top: 130, // Adjust the position as needed
+            left: '39%',
+            // right: 0,
+            alignItems: 'center',
+            zIndex: 11, // Ensure it's above other elements
+        },
+        turnMessageText: {
+            fontSize: 24,
+            fontWeight: 'bold',
+            color: 'white', // Adjust the color as needed
+            textAlign: 'center',
+        },
+
+    });
+
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.turnMessageContainer}>
@@ -494,9 +602,12 @@ export default function CivicMastery() {
                         bottom: '50%',
                         transform: [{ rotate: '0deg' }]
                     }}>
-                        <View style={styles.rightCardContainer}>
-                            <CardDeck count={secondPlayerCardCount} degree="270deg"></CardDeck>
-                        </View>
+                        {secondPlayerCardCount ?
+                            <View style={styles.rightCardContainer}>
+                                <CardDeck count={secondPlayerCardCount} degree="270deg"></CardDeck>
+                            </View> : null
+
+                        }
                     </View>
                 </View>
 
@@ -520,16 +631,33 @@ export default function CivicMastery() {
                         </View>
                     </View>
                 </View>
+                <View >
+                    <Image source={require('../assets/civicMastery/topBench.png')} style={{
+                        zIndex:30,
+                        position: 'absolute',
+                        // left:'85%',
+                        // justifyContent:'center',
+                        // top: 20,
+                        left: '25%',
+                        // bottom: "70%",
+                        bottom:280,
+                        opacity: 1
+                    }}></Image>
+                    <View style={{
+                        width: screenHeight,
+                        alignContent: 'center',
+                        position: 'absolute',
+                        left: '25%',
+                        bottom: '50%',
+                        transform: [{ rotate: '360deg' }]
+                    }}>
+                        <View style={styles.leftCardContainer}>
+                            <CardDeck count={fourthPlayerCardCount} degree="360deg"></CardDeck>
+                        </View>
+                    </View>
+                </View>
 
-                <Image source={require('../assets/civicMastery/topBench.png')} style={{
-                    position: 'absolute',
-                    // left:'85%',
-                    // justifyContent:'center',
-                    top: 0,
-                    left: '25%',
-                    bottom: '0.1%',
-                    opacity: 0.7
-                }}></Image>
+
             </View>
             <View style={clicked && clicledCard ? styles.clickedCardStyle : { display: 'none' }}>
                 {clicledCard}
@@ -538,91 +666,19 @@ export default function CivicMastery() {
             <View style={result ? styles.resultDisplay : { display: 'none' }}>
                 {resultComponent}
             </View>
+            <View style={won ? styles.won : { display: 'none' }}>
+                <Text style={{ index: 50, color: 'white', flex: 1, alignSelf: 'center', marginTop: "20%", fontSize: 20 }}>{won} has Won the Game. Better Luck Next Time!!!!</Text>
+                {/* <View style={{backgroundColor:'green',width:60,height:50,index:51,color:'white',marginBottom:"22%"}}><Text style={{fontSize:20}}>OK</Text></View> */}
+            </View>
             {/* </TouchableWithoutFeedback> */}
             <View style={running ? styles.timer : { display: 'none' }}> {running && <Text style={{ fontSize: 18 }}><Image source={require("../assets/timer_.png")} style={{
-                height:20,
-                width:20
-            }}/> {time}s</Text>} </View>
+                height: 20,
+                width: 20
+            }} /> {time}s</Text>} </View>
         </SafeAreaView>
     )
+
+
+
 }
 
-const styles = StyleSheet.create({
-    container: {
-        // marginTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-        // backgroundColor: 'lightblue'
-    },
-    gameBg: {
-        height: Dimensions.get('window').height + 10,
-        width: Dimensions.get('window').width + 55
-    },
-    bench: {
-        position: 'absolute',
-        bottom: 0,
-        left: '3.6%',
-    },
-    cardContainer: {
-        flexDirection: "row",
-        position: "absolute",
-        bottom: "5%",
-        height: 200,
-        justifyContent: "center",
-        width: "100%",
-        alignItems: "center",
-    },
-    rightCardContainer: {
-        // alignItems: 'center',
-        // flexDirection: 'column',
-        // left:10,
-        bottom: "80%",
-        // right: "5%"
-        // alignItems: 'center'
-    },
-    leftCardContainer: {
-        // alignItems: 'center',
-        // flexDirection: 'column',
-
-        bottom: "80%",
-        // alignItems: 'center'
-    },
-    clickedCardStyle: {
-        position: 'absolute',
-        zIndex: 50,
-        // top: 20,
-        bottom: "30%",
-        left: "30%"
-
-    },
-    resultDisplay: {
-        position: 'absolute',
-        zIndex: 12,
-        // top: 20,
-        bottom: "40%",
-        left: "40%"
-
-    },
-    timer: {
-        position: 'absolute',
-        zIndex: 50,
-        bottom: "75%",
-        left: "33%",
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    turnMessageContainer: {
-        // width:250,
-        position: 'absolute',
-        top: 130, // Adjust the position as needed
-        left: '39%',
-        // right: 0,
-        alignItems: 'center',
-        zIndex: 20, // Ensure it's above other elements
-    },
-    turnMessageText: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: 'white', // Adjust the color as needed
-        textAlign: 'center',
-    },
-
-});

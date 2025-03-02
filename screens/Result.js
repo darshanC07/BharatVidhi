@@ -1,3 +1,5 @@
+import * as ScreenOrientation from 'expo-screen-orientation';
+import { useEffect, useState } from 'react';
 import { View, Text } from 'react-native';
 import { Itim_400Regular, useFonts } from "@expo-google-fonts/itim";
 
@@ -23,12 +25,29 @@ const Result = ({isCorrect, isWrong}) => {
       <Text style={{
         fontFamily : 'Itim_400Regular',
         fontSize : 24,
-        textAlign : 'center',
-        color:'white'
+        textAlign : 'center'
       }}>{data}</Text>
     </View>
   );
 };
 
+const MyScreen = () => {
+  const [isCorrect, setCorrect] = useState(false)
+  const [isWrong, setWrong] = useState(false)
+  useEffect(() => {
+    const changeOrientation = async () => {
+      await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE_LEFT);
+    };
+    changeOrientation();
 
-export default Result;
+  setWrong(true)
+}, []);
+
+  return (
+    <View>
+      <Result isCorrect={isCorrect} isWrong={isWrong}/>
+    </View>
+  );
+};
+
+export default MyScreen;

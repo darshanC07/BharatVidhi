@@ -96,12 +96,13 @@ export default function Card({ cardheight, cardwidth, question, correctOption, e
                                 flexDirection: 'column',
                                 flexWrap: 'wrap',
                                 justifyContent: 'center',
-                                marginRight:10
+                                marginRight: 10
                             }}>
                                 {options != 0 ?
-                                    options.map((item, i) => (
+                                    options.map((item, i) => {
                                         // console.log(item);
-                                        <TouchableWithoutFeedback >
+                                        return (
+                                            < TouchableWithoutFeedback onPress={()=>handleOptionClick(i+1)}>
                                             <View key={i} style={{
                                                 height: 40,
                                                 width: 160,
@@ -116,14 +117,13 @@ export default function Card({ cardheight, cardwidth, question, correctOption, e
                                                     fontFamily: 'Lekton_400Regular',
                                                     color: "white"
                                                 }}>{item}</Text>
-                                            </View>
-                                        </TouchableWithoutFeedback>
-                                    )) : <View></View>}
+                                            </View></TouchableWithoutFeedback>)
+                                    }) : <View></View>}
                             </View>
                         </View>
                     </View>
                 </LinearGradient>
-            </View>
-        </View>
+            </View >
+        </View >
     )
 }

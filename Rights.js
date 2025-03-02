@@ -1,123 +1,253 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View , TouchableWithoutFeedback,SafeAreaView,Image, Platform, PixelRatio,ScrollView, TouchableOpacity, ImageBackground} from 'react-native';
-import Footer from './Footer';
+import { StyleSheet, Text, View, TouchableWithoutFeedback, SafeAreaView, Image, Platform, PixelRatio, ScrollView, TouchableOpacity, ImageBackground } from 'react-native';
+import { useEffect, useState } from "react";
+import Footer from '../components/Footer';
+import { Audio } from "expo-av";
+import { useNavigation } from '@react-navigation/native';
+import React, { useRef } from 'react';
+
+
+const audioSource = require("../assets/land.mp3");
 
 export default function App() {
+  const navigation = useNavigation();
+    const [sound, setSound] = useState(null);
+    const [playing, setPlaying] = useState(true);
+    useEffect(() => {
+            const backHandler = BackHandler.addEventListener("hardwareBackPress", () => {
+                setPlaying(false);
+                navigation.navigate("Homepage")
+                return true;
+            });
+    
+            return () => backHandler.remove();
+        }, []);
+  
+    useEffect(() => {
+      setTimeout(() => {
+        scrollViewRef.current?.scrollToEnd({ animated: true });
+      }, 100);
+      let isMounted = true;
+  
+      return () => {
+        isMounted = false;
+        if (sound) {
+          sound.unloadAsync();
+        }
+      };
+    }, [playing]);
+    async function playSound() {
+      const { sound } = await Audio.Sound.createAsync(audioSource, {
+        shouldPlay: playing,
+        isLooping: true,
+      });
+  
+      if (isMounted) {
+        setSound(sound);
+        await sound.playAsync();
+      }
+    }
+    useEffect(()=>{
+      if(playing){
+  
+        playSound()
+      }
+    },[playing])
+  
+    // playSound();
+  
+  
+    const scrollViewRef = useRef(null);
+    useEffect(() => {
+      // Scroll to bottom after the component is rendered
+      setTimeout(() => {
+          scrollViewRef.current?.scrollToEnd({ animated: true });
+      }, 100); // Small delay to ensure content is loaded
+  }, []);
   return (
     <SafeAreaView style={styles.container}>
-    <View style={{
+      <View style={{
         height: 50,
         flexDirection: "row",
-        verticalAlign:'top',
-        marginTop : '13%',
+        verticalAlign: 'top',
+        marginTop: '13%',
         paddingRight: 20,
         paddingLeft: 20
-    }}> 
-         <Text style={{
-            fontSize: 25,
-            color : '#232ED1',
-            fontWeight : 'bold',
-            textAlign : 'left',
+      }}>
+        <Text style={{
+          fontSize: 25,
+          color: '#232ED1',
+          fontWeight: 'bold',
+          textAlign: 'left',
         }}>BHARAT VIDHI</Text>
 
         <View style={{
-            flex: 1,
-            justifyContent: 'space-around',
-            flexDirection: "row",
-            alignSelf: "stretch",
-            marginLeft : '16%'
+          flex: 1,
+          justifyContent: 'space-around',
+          flexDirection: "row",
+          alignSelf: "stretch",
+          marginLeft: '16%'
         }}>
-            <Image source={require('./assets/notification.png')} styles={styles.icon}></Image>
-            <Image source={require('./assets/coins.png')}styles={styles.icon}></Image>
-            <Image source={require('./assets/profile.png')}styles={[styles.icon,{  height:40,width:40}]}></Image>
+          <Image source={require('../assets/notification.png')} styles={styles.icon}></Image>
+          <Image source={require('../assets/coins.png')} styles={styles.icon}></Image>
+          <Image source={require('../assets/profile.png')} styles={[styles.icon, { height: 40, width: 40 }]}></Image>
         </View>
-    </View> 
-    <ScrollView style={styles.scroll}>
-    <ImageBackground source={require('./assets/R8.png')} style={styles.each}>
-    <TouchableOpacity>
-    <View style={[styles.point,{top:650,left:130}]} onPress={() => navigation.navigate('Welcome.js')}></View>
-    </TouchableOpacity>
-    <TouchableOpacity>
-    <View style={[styles.point,{top:333,left:207}]} onPress={() => navigation.navigate('Welcome.js')}></View>
-    </TouchableOpacity>
-    </ImageBackground>
-    <ImageBackground source={require('./assets/R7.png')} style={styles.each}>
-    <TouchableOpacity>
-    <View style={[styles.point,{top:574,left:98}]} onPress={() => navigation.navigate('Welcome.js')}></View>
-    </TouchableOpacity>
-    <TouchableOpacity>
-    <View style={[styles.point,{top:170,left:175}]} onPress={() => navigation.navigate('Welcome.js')}></View>
-    </TouchableOpacity>
-    </ImageBackground>
-    <ImageBackground source={require('./assets/R6.png')} style={styles.each}>
-    <TouchableOpacity>
-    <View style={[styles.point,{top: 252,left: 205}]} onPress={() => navigation.navigate('Welcome.js')}></View>
-    </TouchableOpacity>
-    <TouchableOpacity>
-    <View style={[styles.point,{top: 490,left: 100}]} onPress={() => navigation.navigate('Welcome.js')}></View>
-    </TouchableOpacity>
-    </ImageBackground>
-    <ImageBackground source={require('./assets/R5.png')} style={styles.each}>
-    <TouchableOpacity>
-    <View style={[styles.point,{top:620,left:120}]} onPress={() => navigation.navigate('Welcome.js')}></View>
-    </TouchableOpacity>
-    <TouchableOpacity>
-    <View style={[styles.point,{top:245,left:200}]} onPress={() => navigation.navigate('Welcome.js')}></View>
-    </TouchableOpacity>
-    </ImageBackground>
-    <ImageBackground source={require('./assets/R4.png')} style={styles.each}><TouchableOpacity>
-    <View style={[styles.point,{top:415,left:230}]} onPress={() => navigation.navigate('Welcome.js')}></View>
-    </TouchableOpacity>
-    </ImageBackground>
-    <ImageBackground source={require('./assets/R3.png')} style={styles.each}>
-    <TouchableOpacity>
-    <View style={[styles.point,{top:255,left:128}]} onPress={() => navigation.navigate('Welcome.js')}></View>
-    </TouchableOpacity>
-    </ImageBackground>
-    <ImageBackground source={require('./assets/rights2.png')} style={styles.each}>
-    <TouchableOpacity>
-    <View style={[styles.point,{top:465,left:125}]} onPress={() => navigation.navigate('Welcome.js')}></View>
-    </TouchableOpacity>
-    <TouchableOpacity>
-    <View style={[styles.point,{top:-56,left:199}]} onPress={() => navigation.navigate('Welcome.js')}></View>
-    </TouchableOpacity>
-    </ImageBackground>
-    <ImageBackground source={require('./assets/rights1.png')} style={styles.each}><TouchableOpacity>
-    <View style={[styles.point,{top:220,left:40}]} onPress={() => navigation.navigate('Welcome.js')}></View>
-    </TouchableOpacity>
-    </ImageBackground>
-    </ScrollView>
-    <Footer></Footer>
+      </View>
+      <ScrollView style={styles.scroll} ref={scrollViewRef}>
+        <ImageBackground source={require('../assets/R8.png')} style={styles.each}>
+
+          <TouchableOpacity onPress={() => {
+              console.log("clicked"); navigation.navigate('Learning', {
+                map: "rights",
+                node: 12
+              })
+            }}>
+            <Image source={require('../assets/play.png')} style={{ top: 374, left: 207, zIndex: 1, width: 40, height: 40, zIndex: 1 }} ></Image>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => {
+              console.log("clicked"); navigation.navigate('Learning', {
+                map: "rights",
+                node: 11
+              })
+            }}>
+            <Image source={require('../assets/play.png')} style={{ top: 600, left: 130, zIndex: 1, width: 40, height: 40, zIndex: 1 }} ></Image>
+          </TouchableOpacity>
+        </ImageBackground>
+        <ImageBackground source={require('../assets/R7.png')} style={styles.each}>
+          <TouchableOpacity onPress={() => {
+              console.log("clicked"); navigation.navigate('Learning', {
+                map: "rights",
+                node: 10
+              })
+            }}>
+            <Image source={require('../assets/play.png')} style={{ top: 574, left: 98, zIndex: 1, width: 40, height: 40, zIndex: 1 }} ></Image>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => {
+              console.log("clicked"); navigation.navigate('Learning', {
+                map: "rights",
+                node: 9
+              })
+            }}>
+            <Image source={require('../assets/play.png')} style={{ top: 170, left: 175, zIndex: 1, width: 40, height: 40, zIndex: 1 }} ></Image>
+          </TouchableOpacity>
+        </ImageBackground>
+        <ImageBackground source={require('../assets/R6.png')} style={styles.each}>
+          <TouchableOpacity onPress={() => {
+              console.log("clicked"); navigation.navigate('Learning', {
+                map: "rights",
+                node: 8
+              })
+            }}>
+            <Image source={require('../assets/play.png')} style={{ top: 252, left: 205, zIndex: 1, width: 40, height: 40, zIndex: 1 }} ></Image>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => {
+              console.log("clicked"); navigation.navigate('Learning', {
+                map: "rights",
+                node: 7
+              })
+            }}>
+            <Image source={require('../assets/play.png')} style={{ top: 490, left: 100, zIndex: 1, width: 40, height: 40, zIndex: 1 }} ></Image>
+          </TouchableOpacity>
+        </ImageBackground>
+        <ImageBackground source={require('../assets/R5.png')} style={styles.each}>
+          <TouchableOpacity onPress={() => {
+              console.log("clicked"); navigation.navigate('Learning', {
+                map: "rights",
+                node: 6
+              })
+            }}>
+            <Image source={require('../assets/play.png')} style={{ top: 620, left: 120, zIndex: 1, width: 40, height: 40, zIndex: 1 }} ></Image>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => {
+              console.log("clicked"); navigation.navigate('Learning', {
+                map: "rights",
+                node: 5
+              })
+            }}>
+            <Image source={require('../assets/play.png')} style={{ top: 245, left: 200, zIndex: 1, width: 40, height: 40, zIndex: 1 }} ></Image>
+          </TouchableOpacity>
+        </ImageBackground>
+        <ImageBackground source={require('../assets/R4.png')} style={styles.each}><TouchableOpacity onPress={() => {
+            console.log("clicked"); navigation.navigate('Learning', {
+              map: "rights",
+              node: 4
+            })
+          }}>
+          <Image source={require('../assets/play.png')} style={{ top: 415, left: 230, zIndex: 1, width: 40, height: 40, zIndex: 1 }} ></Image>
+        </TouchableOpacity>
+        </ImageBackground>
+        <ImageBackground source={require('../assets/R3.png')} style={styles.each}>
+          <TouchableOpacity onPress={() => {
+              console.log("clicked"); navigation.navigate('Learning', {
+                map: "rights",
+                node: 3
+              })
+            }}>
+            <Image source={require('../assets/play.png')} style={{ top: 255, left: 128, zIndex: 1, width: 40, height: 40, zIndex: 1 }} ></Image>
+          </TouchableOpacity>
+        </ImageBackground>
+        <ImageBackground source={require('../assets/rights2.png')} style={styles.each}>
+          <TouchableOpacity onPress={() => {
+              console.log("clicked"); navigation.navigate('Learning', {
+                map: "rights",
+                node: 2
+              })
+            }}>
+            <Image source={require('../assets/play.png')} style={{ top: 465, left: 125, zIndex: 1, width: 40, height: 40, zIndex: 1 }} ></Image>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => {
+              console.log("clicked"); navigation.navigate('Learning', {
+                map: "rights",
+                node: 1
+              })
+            }}>
+            <Image source={require('../assets/play.png')} style={{ top: -56, left: 199, zIndex: 1, width: 40, height: 40, zIndex: 1 }} ></Image>
+          </TouchableOpacity>
+        </ImageBackground>
+        <ImageBackground source={require('../assets/rights1.png')} style={styles.each}><TouchableOpacity onPress={() => {
+            console.log("clicked"); navigation.navigate('Learning', {
+              map: "rights",
+              node: 0
+            })
+          }}>
+          <Image source={require('../assets/play.png')} style={{ top: 220, left: 40, zIndex: 1, width: 40, height: 40, zIndex: 1 }} ></Image>
+        </TouchableOpacity>
+        </ImageBackground>
+      </ScrollView>
+      <Footer></Footer>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  point:{
-    height:40,
-    width:40,
-    backgroundColor:'pink',
-    borderRadius:50,
+  point: {
+    height: 40,
+    width: 40,
+    backgroundColor: 'pink',
+    borderRadius: 50,
+
   },
-  icon:{
-    height:100,
-    width:100,
+  icon: {
+    height: 100,
+    width: 100,
   },
-  each : {
-    width:340,
-    height: 669, 
-    resizeMode: 'cover'
+  each: {
+    width: 340,
+    height: 669,
+    resizeMode: 'cover',
+    zIndex: 0
   },
   container: {
     backgroundColor: 'white',
-    alignItems:'center',
-    width:'100%',
-    height:'100%',
+    alignItems: 'center',
+    width: '100%',
+    height: '100%',
   },
-  scroll:{
-    width : 340,
-    borderRadius : 10,
-    marginTop : '5%',
-    marginBottom : '22%'
+  scroll: {
+    width: 340,
+    borderRadius: 10,
+    marginTop: '5%',
+    marginBottom: '22%',
+
   }
 });

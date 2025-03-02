@@ -1,0 +1,178 @@
+import { StatusBar } from 'expo-status-bar';
+import { StyleSheet, Text, View, TouchableOpacity, SafeAreaView, Image, Platform, PixelRatio, ScrollView, ImageBackground } from 'react-native';
+import { useEffect, useState } from "react";
+import Footer from '../components/Footer';
+import { Audio } from "expo-av";
+import { useNavigation } from '@react-navigation/native';
+import React, { useRef } from 'react';
+
+
+const audioSource = require("../assets/Space.mp3");
+
+export default function Property() {
+  const navigation = useNavigation();
+    const [sound, setSound] = useState(null);
+    const [playing, setPlaying] = useState(true);
+    useEffect(() => {
+            const backHandler = BackHandler.addEventListener("hardwareBackPress", () => {
+                setPlaying(false);
+                navigation.navigate("Homepage")
+                return true;
+            });
+    
+            return () => backHandler.remove();
+        }, []);
+  
+    useEffect(() => {
+      setTimeout(() => {
+        scrollViewRef.current?.scrollToEnd({ animated: true });
+      }, 100);
+      let isMounted = true;
+  
+      return () => {
+        isMounted = false;
+        if (sound) {
+          sound.unloadAsync();
+        }
+      };
+    }, [playing]);
+    async function playSound() {
+      const { sound } = await Audio.Sound.createAsync(audioSource, {
+        shouldPlay: playing,
+        isLooping: true,
+      });
+  
+      if (isMounted) {
+        setSound(sound);
+        await sound.playAsync();
+      }
+    }
+    useEffect(()=>{
+      if(playing){
+  
+        playSound()
+      }
+    },[playing])
+  
+    // playSound();
+  
+  
+    const scrollViewRef = useRef(null);
+    useEffect(() => {
+      // Scroll to bottom after the component is rendered
+      setTimeout(() => {
+          scrollViewRef.current?.scrollToEnd({ animated: true });
+      }, 100); // Small delay to ensure content is loaded
+  }, []);
+  return (
+    <SafeAreaView style={styles.container}>
+      <View style={{
+        height: 50,
+        flexDirection: "row",
+        verticalAlign: 'top',
+        marginTop: '13%',
+        paddingRight: 20,
+        paddingLeft: 20
+      }}>
+        <Text style={{
+          fontSize: 25,
+          color: '#232ED1',
+          fontWeight: 'bold',
+          textAlign: 'left',
+        }}>BHARAT VIDHI</Text>
+
+        <View style={{
+          flex: 1,
+          justifyContent: 'space-around',
+          flexDirection: "row",
+          alignSelf: "stretch",
+          marginLeft: '16%'
+        }}>
+          <Image source={require('../assets/notification.png')} styles={{ marginRight: '3%' }}></Image>
+          <Image source={require('../assets/coins.png')}></Image>
+          <Image source={require('../assets/profile.png')}></Image>
+        </View>
+      </View>
+      <ScrollView style={styles.scroll} ref={scrollViewRef}>
+        <ImageBackground source={require('../assets/property_3.png')} style={styles.each}>
+          <TouchableOpacity onPress={() => navigation.navigate("Learning_1")}>
+            <View style={[styles.point, { left: 200, top: 190 }]}>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate("Learning_1")}>
+            <View style={[styles.point, { right: 40, top: 380 }]}>
+            </View>
+          </TouchableOpacity></ImageBackground>
+        <ImageBackground source={require('../assets/property_2.png')} style={styles.each}>
+          <TouchableOpacity onPress={() => {
+            console.log("clicked"); navigation.navigate('Learning', {
+              map: "property",
+              node: 3
+            })
+          }}>
+            <View style={[styles.point, { left: 185, top: 80 }]}>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => {
+            console.log("clicked"); navigation.navigate('Learning', {
+              map: "property",
+              node: 2
+            })
+          }}>
+            <View style={[styles.point, { right: 30, top: 300 }]}>
+            </View>
+          </TouchableOpacity>
+        </ImageBackground>
+        <ImageBackground source={require('../assets/property_1.png')} style={styles.each}>
+          <TouchableOpacity onPress={() => {
+            console.log("clicked"); navigation.navigate('Learning', {
+              map: "property",
+              node: 1
+            })
+          }}>
+            <View style={[styles.point, { left: 185, top: 20 }]}>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => {
+            console.log("clicked"); navigation.navigate('Learning', {
+              map: "property",
+              node: 0
+            })
+          }}>
+            <View style={[styles.point, { right: 90, top: 185 }]}>
+            </View>
+          </TouchableOpacity>
+        </ImageBackground>
+
+      </ScrollView>
+      <Footer></Footer>
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  each: {
+    width: 340,
+    height: 792,
+    resizeMode: 'cover'
+  },
+  container: {
+    backgroundColor: 'white',
+    alignItems: 'center',
+    width: '100%',
+    height: '100%',
+  },
+  scroll: {
+    width: 340,
+    borderRadius: 10,
+    marginTop: '5%',
+    marginBottom: '22%'
+  },
+  point: {
+    height: 180,
+    width: 180,
+    backgroundColor: 'white',
+    borderRadius: 100,
+    opacity: 0.01
+  },
+});

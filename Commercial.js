@@ -1,8 +1,70 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View , TouchableWithoutFeedback,SafeAreaView,Image,TouchableOpacity, Platform, PixelRatio,ScrollView, ImageBackground} from 'react-native';
-import Footer from './Footer';
+import { StyleSheet, Text, BackHandler,View , TouchableWithoutFeedback,SafeAreaView,Image,TouchableOpacity, Platform, PixelRatio,ScrollView, ImageBackground} from 'react-native';
+import { useEffect, useState } from "react";
+import Footer from '../components/Footer';
+import { Audio } from "expo-av";
+import { useNavigation } from '@react-navigation/native';
+import React, { useRef } from 'react';
+
+
+const audioSource = require("../assets/Tre.mp3");
 
 export default function Commercial() {
+   const navigation = useNavigation()
+    const [sound, setSound] = useState(null);
+    const [playing, setPlaying] = useState(true);
+    useEffect(() => {
+            const backHandler = BackHandler.addEventListener("hardwareBackPress", () => {
+                setPlaying(false);
+                navigation.navigate("Homepage")
+                return true;
+            });
+    
+            return () => backHandler.remove();
+        }, []);
+  
+    useEffect(() => {
+      setTimeout(() => {
+        scrollViewRef.current?.scrollToEnd({ animated: true });
+      }, 100);
+      let isMounted = true;
+  
+      return () => {
+        isMounted = false;
+        if (sound) {
+          sound.unloadAsync();
+        }
+      };
+    }, [playing]);
+    async function playSound() {
+      const { sound } = await Audio.Sound.createAsync(audioSource, {
+        shouldPlay: playing,
+        isLooping: true,
+      });
+  
+      if (isMounted) {
+        setSound(sound);
+        await sound.playAsync();
+      }
+    }
+    useEffect(()=>{
+      if(playing){
+  
+        playSound()
+      }
+    },[playing])
+  
+    // playSound();
+  
+  
+    const scrollViewRef = useRef(null);
+    useEffect(() => {
+      // Scroll to bottom after the component is rendered
+      setTimeout(() => {
+          scrollViewRef.current?.scrollToEnd({ animated: true });
+      }, 100); // Small delay to ensure content is loaded
+  }, []);
+  
   return (
     <SafeAreaView style={styles.container}>
     <View style={{
@@ -25,15 +87,15 @@ export default function Commercial() {
             justifyContent: 'space-around',
             flexDirection: "row",
             alignSelf: "stretch",
-            marginLeft : '16%'
+            marginLeft : '16%' 
         }}>
-            <Image source={require('./assets/notification.png')} styles={{marginRight : '3%'}}></Image>
-            <Image source={require('./assets/coins.png')}></Image>
-            <Image source={require('./assets/profile.png')}></Image>
+            <Image source={require('../assets/notification.png')} styles={{marginRight : '3%'}}></Image>
+            <Image source={require('../assets/coins.png')}></Image>
+            <Image source={require('../assets/profile.png')}></Image>
         </View>
     </View>
-    <ScrollView style={styles.scroll}>
-      <ImageBackground source={require('./assets/commercial_3.png')} style={styles.each}>
+    <ScrollView style={styles.scroll} >
+      <ImageBackground source={require('../assets/commercial_3.png')} style={styles.each}>
        <TouchableOpacity>
           <View style={[styles.point,{top:150,left:300}]} onPress={() => navigation.navigate('Learning')}></View>
           </TouchableOpacity>
@@ -47,7 +109,7 @@ export default function Commercial() {
           <View style={[styles.point,{top:500,left:15}]} onPress={() => navigation.navigate('Learning')}></View>
           </TouchableOpacity>
       </ImageBackground>
-      <ImageBackground source={require('./assets/commercial_2.png')} style={styles.each}>
+      <ImageBackground source={require('../assets/commercial_2.png')} style={styles.each}>
       <TouchableOpacity>
           <View style={[styles.point,{top:90,left:300}]} onPress={() => navigation.navigate('Learning')}></View>
           </TouchableOpacity>
@@ -58,7 +120,7 @@ export default function Commercial() {
           <View style={[styles.point,{top:360,left:275}]} onPress={() => navigation.navigate('Learning')}></View>
           </TouchableOpacity>
       </ImageBackground>
-      <ImageBackground source={require('./assets/commercial_1.png')} style={styles.each}>
+      <ImageBackground source={require('../assets/commercial_1.png')} style={styles.each}>
       <TouchableOpacity>
           <View style={[styles.point,{top:25,left:45}]} onPress={() => navigation.navigate('Learning')}></View>
           </TouchableOpacity>

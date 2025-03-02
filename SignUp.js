@@ -1,0 +1,224 @@
+// import { StatusBar } from 'expo-status-bar';
+import { useState } from 'react';
+import { StyleSheet, Text, View, Image, TextInput, KeyboardAvoidingView, ScrollView, TouchableWithoutFeedback, Platform, StatusBar , Dimensions, Alert} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+export default function App() {
+  const navigation=useNavigation()
+  const [email, setEmail] = useState(undefined)
+  const [name, setName] = useState(undefined)
+  const [password, setPassword] = useState(undefined)
+  const [confirmPassword, setComfirmPassword] = useState(undefined)
+
+  async function handleProceed() {
+    console.log('name = ', name)
+    console.log('email = ', email)
+    console.log('password = ', password)
+    let response,data, userCreatedData
+    if(email==undefined || name==undefined || password==undefined || confirmPassword==undefined){
+      Alert.alert("Please enter all fields")
+    }
+    else if(password!==confirmPassword){
+      Alert.alert("Incorrect Password","Please re-enter your password")
+    } else{
+      response = await fetch("https://9tj0pwqw-5000.inc1.devtunnels.ms/signup", {
+       method: "POST",
+       headers: { 'Content-Type': 'application/json' },
+       body: JSON.stringify({
+         firstname: name,
+         email: email,
+         password: password
+       })
+     })
+     data = await response.json()
+     console.log(data)
+     if(data["code"]==201){
+       Alert.alert("Successful!","User Created successfully")
+       userCreatedData = data["userData"]
+     }
+
+    }
+
+  }
+
+  return (
+    <ScrollView style={styles.outerContainer}>
+      <KeyboardAvoidingView>
+        <View style={styles.container}>
+
+          <Image source={require('../assets/login/Rectangle_1.png')} style={styles.flag1}></Image>
+          <Image source={require('../assets/login/Rectangle_2.png')} style={styles.flag2}></Image>
+          <Image source={require('../assets/login/chakra2.png')} style={styles.bg1}></Image>
+          <Image source={require('../assets/login/chakra1.png')} style={styles.bg2}></Image>
+          <Image source={require('../assets/login/chakra3.png')} style={styles.bg3}></Image>
+          <View style={styles.borderContainer}>
+          <Image source={require('../assets/title.png')} style={{width:184,height:99}}></Image>            <Text style={styles.logIn}>SIGN UP</Text>;
+            <View style={styles.rectangleView}>
+              <TextInput style={styles.inputField} placeholder='Email-id' value={email} onChangeText={(text) => setEmail(text)} />
+            </View>
+            <View style={styles.rectangleView}>
+              <TextInput style={styles.inputField} placeholder='Name' value={name} onChangeText={(text) => setName(text)} /></View>
+            <View style={styles.rectangleView}>
+              <TextInput style={styles.inputField} placeholder='Password' value={password} onChangeText={(text) => setPassword(text)} /></View>
+            <View style={styles.rectangleView}>
+              <TextInput style={styles.inputField} placeholder='Confirm Password' value={confirmPassword} onChangeText={(text) => setComfirmPassword(text)} /></View>
+            <View style={styles.rectangleIcon} />;
+            <TouchableWithoutFeedback onPress={handleProceed}><View style={styles.proceedBox}><Text style={styles.proceedText}>Proceed</Text></View></TouchableWithoutFeedback>
+            
+            <View style={{
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              <Text style={styles.toLogin}>Already have a account?
+                                           <TouchableWithoutFeedback onPress={()=>{
+                                             navigation.navigate("Login")
+                                           }}><Text style={styles.logIn}>Log in!</Text></TouchableWithoutFeedback>
+                                           </Text>
+
+
+            </View>
+          </View>
+        </View></KeyboardAvoidingView>
+    </ScrollView >
+  );
+}
+
+const styles = StyleSheet.create({
+  outerContainer: {
+    flex: 1,
+    marginTop:Platform.OS == "android" ? StatusBar.currentHeight:0
+  
+  },
+  container: {
+    height: Dimensions.get('window').height,
+    flex: 1,
+    justifyContent: 'top',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF'
+  },
+  borderContainer: {
+    width: '90%',
+    height: '93%',
+    borderWidth: 5,
+    borderColor: '#FFDCB9',
+    borderRadius: 10,
+    padding: 20,
+    paddingTop:0,
+    marginTop: "10%",
+    marginBottom: "5%",
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  text: {
+    fontSize: 45,
+    paddingTop: "18%",
+    display: "flex",
+    width: 200,
+    fontWeight: "bold",
+    color: '#232ED1',
+    textAlign: "center",
+    lineHeight: 50,
+    textAlignVertical: "center",
+    fontFamily: "monospace",
+  },
+  logIn: {
+    fontSize: 24,
+    lineHeight: 70,
+    fontFamily: "itim",
+    color: "#a596ff",
+    textAlign: "center",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width: 122,
+    paddingTop: "8%"
+  },
+  rectangleView: {
+    borderRadius: 15,
+    backgroundColor: "#ffeedd",
+    width: "90%",
+    height: "8%",
+    opacity: 0.5,
+    paddingTop: 20,
+    marginBottom: 20
+  },
+  fieldText: {
+    fontSize: 15,
+    color: "#242424",
+    textAlign: "left",
+    paddingLeft: 20,
+    paddingBottom: 5,
+    display: "flex",
+    alignItems: "center"
+  },
+  proceedBox: {
+    height: "5%",
+    width: "30%",
+    backgroundColor: "#B8B8FF",
+    marginTop: "3%",
+    opacity: 0.5,
+    borderRadius: 10,
+    borderColor: "#B8B8FF",
+    borderWidth: 2,
+  },
+  proceedText: {
+    textAlign: "center",
+    color: "#232ED1",
+    paddingTop: "8%",
+    fontWeight: "bold"
+  },
+  google: {
+    backgroundColor: "rgba(189, 184, 179, 0.25)",
+    width: "70%",
+    height: "4.5%",
+    marginTop: "8%",
+    opacity: 0.5,
+    borderWidth: 0.5,
+    borderRadius: 5
+  },
+  googleText: {
+    textAlign: "center",
+    verticalAlign: 'middle'
+  },
+  googleImage: {
+    alignSelf: 'flex-end',
+    verticalAlign: 'middle',
+    opacity: 1
+  },
+  toSignUp: {
+    marginTop: 20
+  },
+  signUp: {
+    textDecorationLine: "underline"
+  },
+  flag1: {
+    top: '13%',
+    position: 'absolute',
+    resizeMode: 'contain'
+  },
+  flag2: {
+    top: '20%',
+    position: 'absolute',
+    resizeMode: 'contain'
+  },
+  bg1: {
+    position: 'absolute',
+    right: 0,
+    top: 70,
+    resizeMode: 'contain',
+    opacity: 0.7
+  },
+  bg2: {
+    position: 'absolute',
+    right: 0,
+    top: 0,
+    resizeMode: 'contain',
+    opacity: 0.95
+  },
+  bg3: {
+    position: 'absolute',
+    left: 0,
+    bottom: 0,
+    resizeMode: 'contain',
+    opacity: 0.8
+  }
+});

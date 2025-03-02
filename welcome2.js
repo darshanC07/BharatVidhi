@@ -12,7 +12,7 @@ export default function App() {
     <View style={{backgroundColor:'rgba(253,177,55,0.3)',flex:1}}>
         
             
-              <ImageBackground source={require('./assets/scroll2.png')} style={{marginTop:'8%'}}>
+              <ImageBackground source={require('../assets/scroll2.png')} style={{marginTop:'8%'}}>
               {/* <View style={{alignSelf:'center',width:'70%',height:'90%',marginTop:'30%'}}> */}
                 <Text  style={{fontFamily:'Astloch_400Regular',fontSize:24,alignSelf:'center',textAlign:'justify',alignSelf:'center',width:'70%',height:'85%',top:'20%'}}>
                   "The balance of justice in this land is at stake. You must embark on a journey across the domains of law, rights, and governance to restore harmony. Each challenge you face will test your wisdom, and only those who truly understand the Constitution can unlock its deepest secrets.
@@ -26,7 +26,7 @@ export default function App() {
                     Start your Journey!
                 </Text>
             </TouchableOpacity>
-            <Image source={require('./assets/logo.png')} style={{position:"absolute",top:770,right:10,width:67,height:67}}></Image>
+            <Image source={require('../assets/logo.png')} style={{position:"absolute",top:770,right:10,width:67,height:67}}></Image>
             
        
 

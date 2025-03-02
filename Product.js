@@ -1,146 +1,278 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View , TouchableOpacity,SafeAreaView,Image, Platform, PixelRatio,ScrollView} from 'react-native';
-import Footer from './Footer';
-import { useFonts, PatrickHandSC_400Regular } from '@expo-google-fonts/patrick-hand-sc';
-import { KiwiMaru_400Regular } from '@expo-google-fonts/kiwi-maru';
+import { StatusBar } from "expo-status-bar";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  SafeAreaView,
+  Image,
+} from "react-native";
+import Footer from "../components/Footer";
+import { useNavigation } from "@react-navigation/native";
+import { useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+const ProductDisplay = ({
+  name,
+  description,
+  price,
+  image,
+  acquired,
+  total,
+  prod_id,
+}) => {
+  const navigation = useNavigation();
+  console.log("Buying product:", prod_id);
+  // State for acquired quantity and total quantity
+  const [acquiredQuantity, setAcquiredQuantity] = useState(acquired);
+  const [totalQuantity, setTotalQuantity] = useState(total);
+  const handleBuy = async () => {
+    try {
+      let userUid = ""; // Use `let` so it can be reassigned
+      const storedUser = await AsyncStorage.getItem("userSession");
 
-const ProductDisplay = ({name, description, price, image, onPress, accquired, total }) => {
-  const [fontsLoaded] = useFonts({
-            KiwiMaru_400Regular,
-            PatrickHandSC_400Regular
-            });
-    return (
-      <View style={{
-        backgroundColor: 'rgba(255, 238, 221, 0.4)',
-        borderRadius: 10,
-        padding: 10,
-        height: '73%',
-        width : '90%',
-        marginBottom : '4%',
-        marginTop :'2%'
-       }} onPress={() => navigation.navigate("Product")}>
-        <View style={{padding : 10}}>
-            <View style = {{
-                    marginTop : '1%',
-                    justifyContent : 'space-between',
-                    alignItems : 'center',
-                }}>
-                <View style={{flexDirection : 'row', alignItems : 'center',  marginLeft : '2%'}}>
-                    <TouchableOpacity>
-                        <Image source={require('./assets/back.png')}/>
-                    </TouchableOpacity>
-                    <Text style={{
-                        fontSize: 18,
-                        fontWeight: 'bold',
-                        color : '#1D3557',
-                        marginLeft : '5%'
-                        }}>
-                        {name}
-                    </Text>
-                    <Text style={{fontSize : 20, marginLeft : '50%'}}> {accquired} / {total} </Text>
-                </View>
-            </View>
-            <Image source={image} style={{height : '60%', width : '100%', justifyContent:'center', marginTop : '2%'}} resizeMode="contain" />
-            <View style={{alignItems : 'center', flexDirection : 'row', flex : 1, justifyContent : 'center'}}>
-                <View style={{backgroundColor : '#ADADAD', height : 10, width : 10, borderRadius : 5, marginHorizontal : '5%'}}></View>
-                <View style={{backgroundColor : '#D9D9D9', height : 10, width : 10, borderRadius : 5, marginHorizontal : '5%'}}></View>
-            </View>
-            <View style={{ alignItems: 'center' }}>
+      if (storedUser) {
+        const parsedUser = JSON.parse(storedUser);
+        userUid = parsedUser.uid || ""; // Ensure `uid` exists
+      }
+
+      console.log("User UID:", userUid);
+
+      const response = await fetch(
+        "https://813prx4h-5000.inc1.devtunnels.ms/buy",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            user_uid: userUid, // Now using dynamic user UID
+            prod_id: prod_id,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (data.success) {
+        setAcquiredQuantity((prev) => prev + 1);
+        setTotalQuantity((prev) => prev - 1);
+        alert(data.message || "Unknown error");
+      } else {
+        alert("Purchase failed: " + (data.message || "Unknown error"));
+      }
+    } catch (error) {
+      console.error("Error purchasing product:", error);
+      alert("Something went wrong! Please try again.");
+    }
+  };
+
+  return (
+    <View style={styles.productContainer}>
+      <View style={{ padding: 10 }}>
+        {/* Back Button & Header */}
+        <View style={styles.headerRow}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Image source={require("../assets/back.png")} style={styles.icon} />
+          </TouchableOpacity>
+          <Text style={styles.productName}>{name}</Text>
+          <Text style={styles.count}>
+            {acquiredQuantity} / {totalQuantity}
+          </Text>
         </View>
-            <Text style={{fontSize: 18, color:'#1D3557', marginTop : '4%',fontFamily:'KiwiMaru_400Regular'}}>{description}</Text>
-            <View style={{
-                marginTop : '5%',
-                flexDirection : 'row',
-                alignItems : 'center'
-                }}>
-                <Text style={{
-                    fontSize: 16,
-                    color: 'black', 
-                    textAlign : 'left',
-                    fontFamily:'KiwiMaru_400Regular'
-                    }}>PRICE: {price}
-                </Text>
-                <Image source={require('./assets/coins.png')} style={{height : 22, width : 22, marginLeft : '2%'}}></Image>
-            </View>
-            <View style={{
-                flexDirection : 'row',
-                marginTop : '8%',
-                justifyContent : 'center'
-            }}>
-                <TouchableOpacity style={{ height : 60, width : '50%', backgroundColor: 'rgba(255, 238, 221, 0.8)', justifyContent : 'center', borderRadius: 10, borderColor : '#FFDCB9', borderBottomWidth: 3}}>
-                    <Text style={{fontSize : 18, textAlign : 'center',fontFamily:'KiwiMaru_400Regular'}}>BUY NOW</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={{ height : 60, width : '50%', backgroundColor: 'rgba(255, 238, 221, 0.8)', marginLeft : '4%', justifyContent :'center', borderRadius: 10, borderColor : '#FFDCB9', borderBottomWidth: 3}}>
-                    <Text style={{fontSize : 18, textAlign : 'center',fontFamily:'KiwiMaru_400Regular'}}>WISHLIST</Text>
-                </TouchableOpacity>
-            </View>
+
+        {/* Product Image */}
+        <Image
+          source={{ uri: image }}
+          style={styles.productImage}
+          resizeMode="contain"
+        />
+
+        {/* Product Description */}
+        <Text style={styles.description}>{description}</Text>
+
+        {/* Price Section */}
+        <View style={styles.priceRow}>
+          <Text style={styles.priceText}>PRICE: {price}</Text>
+          <Image
+            source={require("../assets/coins.png")}
+            style={styles.coinIcon}
+          />
+        </View>
+
+        {/* Buttons */}
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.buyButton} onPress={handleBuy}>
+            <Text style={styles.buttonText}>BUY NOW</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.wishlistButton}
+            onPress={() => console.log("Wishlist clicked")}
+          >
+            <Text style={styles.buttonText}>WISHLIST</Text>
+          </TouchableOpacity>
         </View>
       </View>
-    );
+    </View>
+  );
 };
 
-export default function Product() {
+export default function Product({ route }) {
+  const p = route?.params?.p || {
+    name: "Default Product",
+    description: "",
+    price: 0,
+    image: null,
+    quantity: 10,
+    acquiredQuantity: 2,
+  };
+
   return (
     <SafeAreaView style={styles.container}>
-    <View style={{
-        height: 50,
-        flexDirection: "row",
-        verticalAlign:'top',
-        marginTop : '13%',
-        paddingRight: 20,
-        paddingLeft: 20
-    }}>
-        <Text style={{
-            fontSize: 25,
-            color : '#232ED1',
-            fontWeight : 'bold',
-            textAlign : 'left',
-        }}>BHARAT VIDHI</Text>
-
-        <View style={{
-            flex: 1,
-            justifyContent: 'space-around',
-            flexDirection: "row",
-            alignSelf: "stretch",
-            marginLeft : '16%'
-        }}>
-            <Image source={require('./assets/notification.png')} styles={{marginRight : '3%'}}></Image>
-            <Image source={require('./assets/coins.png')}></Image>
-            <Image source={require('./assets/profile.png')}></Image>
+      {/* Header */}
+      <View style={styles.topHeader}>
+        <Text style={styles.headerText}>BHARAT VIDHI</Text>
+        <View style={styles.iconRow}>
+          <Image
+            source={require("../assets/notification.png")}
+            style={styles.icon}
+          />
+          <Image source={require("../assets/coins.png")} style={styles.icon} />
+          <Image source={require("../assets/profile.png")} style={styles.icon} />
         </View>
-    </View>
-    <Text style={styles.archives1}>ARCHIVES</Text>
-        <ProductDisplay 
-            bgColor={'#FFEEDD'} 
-            name={'NAME'} 
-            description={'DESCRIPTION -- --'} 
-            price={'15'} 
-            image={source=require('./assets/stamp.png')} 
-            total={5}
-            accquired={0}/>
-    <Footer></Footer>
+      </View>
+
+      <Text style={styles.archivesTitle}>ARCHIVES</Text>
+
+      {/* Product Display */}
+      <ProductDisplay
+        name={p.name}
+        description={p.description}
+        price={p.price}
+        image={p.image}
+        total={p.quantity}
+        acquired={p.acquiredQuantity}
+        prod_id={p.prod_id}
+      />
+
+      {/* Footer */}
+      <Footer />
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-    archives1 : {
-        fontSize: 28,
-        color: "#080606",
-        textAlign: "center",
-        marginTop:'2%',
-        fontFamily:'PatrickHandSC_400Regular'
-    },
-    container: {
-        backgroundColor: 'white',
-        alignItems:'center',
-        width:'100%',
-        height:'100%',
-    },
-    scroll:{
-        width : 340,
-        borderRadius : 10,
-        marginTop : '5%',
-        marginBottom : '10%'
-    }
-    });
+  container: {
+    backgroundColor: "white",
+    alignItems: "center",
+    width: "100%",
+    height: "100%",
+  },
+  topHeader: {
+    height: 50,
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: "13%",
+    paddingHorizontal: 20,
+  },
+  headerText: {
+    fontSize: 25,
+    color: "#232ED1",
+    fontWeight: "bold",
+  },
+  iconRow: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "flex-end",
+  },
+  icon: {
+    width: 24,
+    height: 24,
+    marginHorizontal: 5,
+  },
+  archivesTitle: {
+    fontSize: 22,
+    color: "#080606",
+    textAlign: "center",
+    marginTop: "2%",
+  },
+  productContainer: {
+    backgroundColor: "rgba(255, 238, 221, 0.4)",
+    borderRadius: 10,
+    padding: 10,
+    height: "73%",
+    width: "90%",
+    marginBottom: "4%",
+    marginTop: "2%",
+  },
+  headerRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 10,
+  },
+  productName: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#1D3557",
+  },
+  count: {
+    fontSize: 18,
+    marginLeft: "auto",
+  },
+  productImage: {
+    height: "60%",
+    width: "100%",
+    justifyContent: "center",
+    marginTop: "2%",
+  },
+  description: {
+    fontSize: 18,
+    color: "#1D3557",
+    marginTop: "4%",
+    textAlign: "center",
+  },
+  priceRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: "5%",
+    justifyContent: "center",
+  },
+  priceText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "black",
+  },
+  coinIcon: {
+    height: 22,
+    width: 22,
+    marginLeft: "2%",
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    marginTop: "8%",
+    justifyContent: "center",
+  },
+  buyButton: {
+    height: 60,
+    width: "50%",
+    backgroundColor: "rgba(255, 238, 221, 0.8)",
+    justifyContent: "center",
+    borderRadius: 10,
+    borderBottomWidth: 3,
+    borderColor: "#FFDCB9",
+  },
+  wishlistButton: {
+    height: 60,
+    width: "50%",
+    backgroundColor: "rgba(255, 238, 221, 0.8)",
+    marginLeft: "4%",
+    justifyContent: "center",
+    borderRadius: 10,
+    borderBottomWidth: 3,
+    borderColor: "#FFDCB9",
+  },
+  buttonText: {
+    fontSize: 18,
+    textAlign: "center",
+  },
+});

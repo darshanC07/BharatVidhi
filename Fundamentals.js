@@ -1,8 +1,75 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View , TouchableWithoutFeedback,SafeAreaView,Image,TouchableOpacity, Platform, PixelRatio,ScrollView, ImageBackground} from 'react-native';
-import Footer from './Footer';
+import { StyleSheet, Text, View ,SafeAreaView,Image,TouchableOpacity, Platform, PixelRatio,ScrollView, ImageBackground,BackHandler} from 'react-native';
+import React, { useRef } from 'react';
+import { useEffect, useState } from "react";
+import Footer from '../components/Footer';
+import { Audio } from "expo-av";
+import { useNavigation } from '@react-navigation/native';
+
+const audioSource = require("../assets/Mount.mp3");
+
+
+
+
+
+
 
 export default function Fundamentals() {
+ const navigation = useNavigation()
+  const [sound, setSound] = useState(null);
+  const [playing, setPlaying] = useState(true);
+  useEffect(() => {
+          const backHandler = BackHandler.addEventListener("hardwareBackPress", () => {
+              setPlaying(false);
+              navigation.navigate("Homepage")
+              return true;
+          });
+  
+          return () => backHandler.remove();
+      }, []);
+
+  useEffect(() => {
+    setTimeout(() => {
+      scrollViewRef.current?.scrollToEnd({ animated: true });
+    }, 100);
+    let isMounted = true;
+
+    return () => {
+      isMounted = false;
+      if (sound) {
+        sound.unloadAsync();
+      }
+    };
+  }, [playing]);
+  async function playSound() {
+    const { sound } = await Audio.Sound.createAsync(audioSource, {
+      shouldPlay: playing,
+      isLooping: true,
+    });
+
+    if (isMounted) {
+      setSound(sound);
+      await sound.playAsync();
+    }
+  }
+  useEffect(()=>{
+    if(playing){
+
+      playSound()
+    }
+  },[playing])
+
+  // playSound();
+
+
+  const scrollViewRef = useRef(null);
+  useEffect(() => {
+    // Scroll to bottom after the component is rendered
+    setTimeout(() => {
+        scrollViewRef.current?.scrollToEnd({ animated: true });
+    }, 100); // Small delay to ensure content is loaded
+}, []);
+
   return (
     <SafeAreaView style={styles.container}>
     <View style={{
@@ -27,14 +94,14 @@ export default function Fundamentals() {
             alignSelf: "stretch",
             marginLeft : '16%'
         }}>
-            <Image source={require('./assets/notification.png')} styles={{marginRight : '3%'}}></Image>
-            <Image source={require('./assets/coins.png')}></Image>
-            <Image source={require('./assets/profile.png')}></Image>
+            <Image source={require('../assets/notification.png')} styles={{marginRight : '3%'}}></Image>
+            <Image source={require('../assets/coins.png')}></Image>
+            <Image source={require('../assets/profile.png')}></Image>
         </View>
     </View>
-    <ScrollView style={styles.scroll}>
+    <ScrollView style={styles.scroll} ref={scrollViewRef}>
 
-    <ImageBackground source={require('./assets/f6.png')} style={styles.each}>
+    <ImageBackground source={require('../assets/fundamentals_6.png')} style={styles.each}>
        <TouchableOpacity>
           <View style={[styles.point,{top:150,left:300}]} onPress={() => navigation.navigate('Learning')}></View>
           </TouchableOpacity>
@@ -48,7 +115,7 @@ export default function Fundamentals() {
           <View style={[styles.point,{top:500,left:15}]} onPress={() => navigation.navigate('Learning')}></View>
           </TouchableOpacity>
       </ImageBackground>
-    <ImageBackground source={require('./assets/f5.png')} style={styles.each}>
+    <ImageBackground source={require('../assets/fundamentals_5.png')} style={styles.each}>
        <TouchableOpacity>
           <View style={[styles.point,{top:150,left:300}]} onPress={() => navigation.navigate('Learning')}></View>
           </TouchableOpacity>
@@ -62,7 +129,7 @@ export default function Fundamentals() {
           <View style={[styles.point,{top:500,left:15}]} onPress={() => navigation.navigate('Learning')}></View>
           </TouchableOpacity>
       </ImageBackground>
-    <ImageBackground source={require('./assets/f4.png')} style={styles.each}>
+    <ImageBackground source={require('../assets/fundamentals_4.png')} style={styles.each}>
        <TouchableOpacity>
           <View style={[styles.point,{top:150,left:300}]} onPress={() => navigation.navigate('Learning')}></View>
           </TouchableOpacity>
@@ -76,7 +143,7 @@ export default function Fundamentals() {
           <View style={[styles.point,{top:500,left:15}]} onPress={() => navigation.navigate('Learning')}></View>
           </TouchableOpacity>
       </ImageBackground>
-      <ImageBackground source={require('./assets/f3.png')} style={styles.each}>
+      <ImageBackground source={require('../assets/fundamentals_3.png')} style={styles.each}>
        <TouchableOpacity>
           <View style={[styles.point,{top:150,left:300}]} onPress={() => navigation.navigate('Learning')}></View>
           </TouchableOpacity>
@@ -90,7 +157,7 @@ export default function Fundamentals() {
           <View style={[styles.point,{top:500,left:15}]} onPress={() => navigation.navigate('Learning')}></View>
           </TouchableOpacity>
       </ImageBackground>
-      <ImageBackground source={require('./assets/f2.png')} style={styles.each}>
+      <ImageBackground source={require('../assets/fundamentals_2.png')} style={styles.each}>
       <TouchableOpacity>
           <View style={[styles.point,{top:90,left:300}]} onPress={() => navigation.navigate('Learning')}></View>
           </TouchableOpacity>
@@ -101,7 +168,7 @@ export default function Fundamentals() {
           <View style={[styles.point,{top:360,left:275}]} onPress={() => navigation.navigate('Learning')}></View>
           </TouchableOpacity>
       </ImageBackground>
-      <ImageBackground source={require('./assets/f1.png')} style={styles.each}>
+      <ImageBackground source={require('../assets/fundamentals_1.png')} style={styles.each}>
       <TouchableOpacity>
           <View style={[styles.point,{top:25,left:45}]} onPress={() => navigation.navigate('Learning')}></View>
           </TouchableOpacity>
@@ -113,8 +180,7 @@ export default function Fundamentals() {
           </TouchableOpacity>
       </ImageBackground>
      
-    </ScrollView>
-    <Footer></Footer>
+    </ScrollView><Footer></Footer>
     </SafeAreaView>
   );
 }
@@ -127,7 +193,7 @@ const styles = StyleSheet.create({
   },
   each : {
     width:340,
-    height: 803, 
+    height: 803.2, 
     resizeMode: 'strech'
   },
   container: {
@@ -141,6 +207,7 @@ const styles = StyleSheet.create({
     borderRadius : 10,
     marginTop : '5%',
     marginBottom : '22%',
-    flexGrow:1
+    flexGrow:1,
+    padding : 0
   }
 });

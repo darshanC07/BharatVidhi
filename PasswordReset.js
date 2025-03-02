@@ -1,57 +1,118 @@
-// import { StatusBar } from 'expo-status-bar';
-import { useState } from 'react';
-import { StyleSheet, Text, View, Image, TextInput, KeyboardAvoidingView, ScrollView, TouchableWithoutFeedback, Platform, StatusBar , Dimensions, Alert} from 'react-native';
+import { useState } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  TextInput,
+  KeyboardAvoidingView,
+  ScrollView,
+  TouchableWithoutFeedback,
+  Platform,
+  StatusBar,
+  Dimensions,
+  Alert,
+} from "react-native";
+import { StatusBar as ExpoStatusBar } from "expo-status-bar";
 
-export default function App() {
+export default function Password_reset() {
+  const [email, setEmail] = useState("");
+
+  const handleProceed = async () => {
+    if (!email) {
+      Alert.alert("Error", "Please enter your email address.");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        "https://813prx4h-5000.inc1.devtunnels.ms/reset_password",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        Alert.alert("Success", data.message);
+      } else {
+        Alert.alert("Error", data.error);
+      }
+    } catch (error) {
+      Alert.alert("Error", "Failed to connect to the server. Try again later.");
+    }
+  };
 
   return (
     <ScrollView style={styles.outerContainer}>
       <KeyboardAvoidingView>
         <View style={styles.container}>
+          <Image
+            source={require("./assets/Rectangle_1.png")}
+            style={styles.flag1}
+          />
+          <Image
+            source={require("./assets/Rectangle_2.png")}
+            style={styles.flag2}
+          />
+          <Image source={require("./assets/chakra2.png")} style={styles.bg1} />
+          <Image source={require("./assets/chakra1.png")} style={styles.bg2} />
+          <Image source={require("./assets/chakra3.png")} style={styles.bg3} />
 
-          <Image source={require('./assets/Rectangle_1.png')} style={styles.flag1}></Image>
-          <Image source={require('./assets/Rectangle_2.png')} style={styles.flag2}></Image>
-          <Image source={require('./assets/chakra2.png')} style={styles.bg1}></Image>
-          <Image source={require('./assets/chakra1.png')} style={styles.bg2}></Image>
-          <Image source={require('./assets/chakra3.png')} style={styles.bg3}></Image>
           <View style={styles.borderContainer}>
             <Text style={styles.text}>BHARAT VIDHI</Text>
-            <Text style={styles.logIn}>CHANGE PASSWORD</Text>;
+            <Text style={styles.logIn}>CHANGE PASSWORD</Text>
+
             <View style={styles.rectangleView}>
-              <TextInput style={styles.inputField} placeholder='Email-id'/>
+              <TextInput
+                style={styles.inputField}
+                placeholder="Email-id"
+                value={email}
+                onChangeText={setEmail}
+                keyboardType="email-address"
+                autoCapitalize="none"
+              />
             </View>
-            <TouchableWithoutFeedback onPress={handleProceed}><View style={styles.proceedBox}><Text style={styles.proceedText}>SEND LINK</Text></View></TouchableWithoutFeedback>
+
+            <TouchableWithoutFeedback onPress={handleProceed}>
+              <View style={styles.proceedBox}>
+                <Text style={styles.proceedText}>SEND LINK</Text>
+              </View>
+            </TouchableWithoutFeedback>
           </View>
-        </View></KeyboardAvoidingView>
-    </ScrollView >
+        </View>
+      </KeyboardAvoidingView>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   outerContainer: {
     flex: 1,
-    marginTop:Platform.OS == "android" ? StatusBar.currentHeight:0
-  
+    marginTop: Platform.OS == "android" ? StatusBar.currentHeight : 0,
   },
   container: {
-    height: Dimensions.get('window').height,
+    height: Dimensions.get("window").height,
     flex: 1,
-    justifyContent: 'top',
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF'
+    justifyContent: "top",
+    alignItems: "center",
+    backgroundColor: "#FFFFFF",
   },
   borderContainer: {
-    width: '90%',
-    height: '93%',
+    width: "90%",
+    height: "93%",
     borderWidth: 5,
-    borderColor: '#FFDCB9',
+    borderColor: "#FFDCB9",
     borderRadius: 10,
     padding: 20,
-    paddingTop:0,
+    paddingTop: 0,
     marginTop: "10%",
     marginBottom: "5%",
-    justifyContent: 'center',
-    alignItems: 'center'
+    justifyContent: "center",
+    alignItems: "center",
   },
   text: {
     fontSize: 45,
@@ -59,7 +120,7 @@ const styles = StyleSheet.create({
     display: "flex",
     width: 200,
     fontWeight: "bold",
-    color: '#232ED1',
+    color: "#232ED1",
     textAlign: "center",
     lineHeight: 50,
     textAlignVertical: "center",
@@ -75,8 +136,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: 150,
     paddingTop: "8%",
-    marginTop : '10%',
-    marginBottom : '50%'
+    marginTop: "10%",
+    marginBottom: "50%",
   },
   rectangleView: {
     borderRadius: 15,
@@ -85,7 +146,7 @@ const styles = StyleSheet.create({
     height: "8%",
     opacity: 0.5,
     paddingTop: 20,
-    marginBottom: '30%'
+    marginBottom: "30%",
   },
   fieldText: {
     fontSize: 15,
@@ -94,7 +155,7 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     paddingBottom: 5,
     display: "flex",
-    alignItems: "center"
+    alignItems: "center",
   },
   proceedBox: {
     height: "5%",
@@ -110,7 +171,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "#232ED1",
     paddingTop: "8%",
-    fontWeight: "bold"
+    fontWeight: "bold",
   },
   google: {
     backgroundColor: "rgba(189, 184, 179, 0.25)",
@@ -119,52 +180,52 @@ const styles = StyleSheet.create({
     marginTop: "8%",
     opacity: 0.5,
     borderWidth: 0.5,
-    borderRadius: 5
+    borderRadius: 5,
   },
   googleText: {
     textAlign: "center",
-    verticalAlign: 'middle'
+    verticalAlign: "middle",
   },
   googleImage: {
-    alignSelf: 'flex-end',
-    verticalAlign: 'middle',
-    opacity: 1
+    alignSelf: "flex-end",
+    verticalAlign: "middle",
+    opacity: 1,
   },
   toSignUp: {
-    marginTop: 20
+    marginTop: 20,
   },
   signUp: {
-    textDecorationLine: "underline"
+    textDecorationLine: "underline",
   },
   flag1: {
-    top: '13%',
-    position: 'absolute',
-    resizeMode: 'contain'
+    top: "13%",
+    position: "absolute",
+    resizeMode: "contain",
   },
   flag2: {
-    top: '20%',
-    position: 'absolute',
-    resizeMode: 'contain'
+    top: "20%",
+    position: "absolute",
+    resizeMode: "contain",
   },
   bg1: {
-    position: 'absolute',
+    position: "absolute",
     right: 0,
     top: 70,
-    resizeMode: 'contain',
-    opacity: 0.7
+    resizeMode: "contain",
+    opacity: 0.7,
   },
   bg2: {
-    position: 'absolute',
+    position: "absolute",
     right: 0,
     top: 0,
-    resizeMode: 'contain',
-    opacity: 0.95
+    resizeMode: "contain",
+    opacity: 0.95,
   },
   bg3: {
-    position: 'absolute',
+    position: "absolute",
     left: 0,
     bottom: 0,
-    resizeMode: 'contain',
-    opacity: 0.8
-  }
+    resizeMode: "contain",
+    opacity: 0.8,
+  },
 });

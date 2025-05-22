@@ -8,6 +8,9 @@ export default function App() {
     YatraOne_400Regular,
     NixieOne_400Regular
   });
+  if (!fontsLoaded) {
+    return null; // Prevent rendering until fonts are loaded
+  }
   return (
     <View style={styles.container}>
       <Image source={require('../assets/login/Rectangle_3.png')} style={styles.flag1}></Image>

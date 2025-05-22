@@ -47,7 +47,7 @@ export default function Login() {
 
     try {
       const response = await fetch(
-        "https://9tj0pwqw-5000.inc1.devtunnels.ms/login",
+        "https://bharatvidhi.onrender.com/login",
         {
           method: "POST",
           headers: {
@@ -65,7 +65,7 @@ export default function Login() {
         // console.log("inside login")
         await AsyncStorage.setItem("userSession", JSON.stringify(data.user));
         console.log("setting user : ",JSON.stringify(data.user))
-        navigation.replace("Welcome");
+        navigation.replace("Homepage");
         setUser(JSON.stringify(data.user))
         Alert.alert("Success", data.message);
       } else {

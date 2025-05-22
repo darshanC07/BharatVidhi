@@ -1,9 +1,16 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View , TouchableWithoutFeedback,SafeAreaView,Image,TouchableOpacity, Platform, PixelRatio,ScrollView, ImageBackground} from 'react-native';
 import Footer from '../components/Footer';
+import React, { useRef, useEffect } from "react";
 
 export default function Commercial() {
-  
+  const scrollViewRef = useRef(null);
+
+  useEffect(() => {
+    setTimeout(() => {
+      scrollViewRef.current?.scrollToEnd({ animated: true });
+    }, 100);
+  }, []);
   return (
     <SafeAreaView style={styles.container}>
     <View style={{
@@ -33,7 +40,7 @@ export default function Commercial() {
             <Image source={require('../assets/profile.png')}></Image>
         </View>
     </View>
-    <ScrollView style={styles.scroll} >
+    <ScrollView style={styles.scroll} ref={scrollViewRef}>
       <ImageBackground source={require('../assets/commercial_3.png')} style={styles.each}>
        <TouchableOpacity>
           <View style={[styles.point,{top:150,left:300}]} onPress={() => navigation.navigate('Learning')}></View>

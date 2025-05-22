@@ -19,10 +19,12 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.darshanc07.bharatvidhi"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "owner": "darshanc07"
   }
 }

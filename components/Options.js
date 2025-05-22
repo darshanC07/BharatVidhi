@@ -58,7 +58,7 @@ export default function Option({text, index, isCorrect, handleCorrect,currentCar
                 handleCorrect(currentCardIndex+1)
             } else {
                 console.log("wrong answer")
-                Alert.alert("Sad Luck!!!","Wrong Answer")
+                Alert.alert("Hard Luck!!Try Better")
             }
         }}
         >

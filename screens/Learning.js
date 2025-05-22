@@ -4,8 +4,9 @@ import { useFonts, PatrickHandSC_400Regular } from '@expo-google-fonts/patrick-h
 import { Itim_400Regular } from "@expo-google-fonts/itim";
 import { db } from "../firebaseSetup";
 import { onValue, ref, get } from "firebase/database";
-import { useRoute } from '@react-navigation/native';
+import { useRoute,useFocusEffect } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
+import { useNavigation } from '@react-navigation/native';
 import CardDeck from '../components/CardDeck';
 import Options from '../components/Options';
 
@@ -17,13 +18,21 @@ const fundamentalsCards = ['#E6EFFD', '#F76565', '#AEE16B']; //to be finalized
 
 
 export default function Learning() {
+    const navigation = useNavigation()
     const [moduleCards, setModuleCards] = useState(null)
     const [currentCard, setCurrentCard] = useState(null)
     const [index, setIndex] = useState(0)
     const route = useRoute();
     const { map, node } = route.params
     console.log(map, node)
-
+    // useFocusEffect(()=>{
+    //     if(moduleCards){
+    //         console.log(index,moduleCards.length)
+    //         if(index==moduleCards.length){
+    //             navigation.navigate("Homepage")
+    //         }
+    //     }
+    // },[index,moduleCards])
     const ProgressBar = ({ progress }) => {
         return (
             <View style={{
@@ -105,33 +114,28 @@ export default function Learning() {
                             }}>
                                 {options.map((option, i) => (
 
-                                    <TouchableWithoutFeedback style={{
-                                        width : '95%',
-                                        backgroundColor : '#8FDAFF',
-                                        alignItems : 'center',
-                                        alignSelf : 'center',
-                                        flexDirection : 'row',
-                                        borderRadius : 15,
-                                        marginBottom : '5%',
-                                        padding : 12,
-                                        flexWrap : 'wrap'
-                                    }} >
-                                        {/* <View style={{
-                                            height: 60,
-                                            width: "100%",
-                                            padding: 10,
-                                            backgroundColor: "lightblue",
+                                    <TouchableWithoutFeedback
+                                        onPress={() => console.log(`Option ${i} pressed`)}
+                                        style={{
+                                            width: '95%',
+                                            backgroundColor: '#8FDAFF',
                                             alignItems: 'center',
-                                            justifyContent: 'center',
-                                            // marginBottom: 20
-                                        }}><Text key={i} style={{
-                                            fontSize: 15,
-                                            color: "black"
-                                        }}>{option}</Text></View> */}
-                                        <Options text={option} index=
-                                        {i} currentCardIndex={index} isCorrect={correctOption}
-                                        handleCorrect={(num)=>{setIndex(num)}} ></Options>
-                                        </TouchableWithoutFeedback>
+                                            alignSelf: 'center',
+                                            flexDirection: 'row',
+                                            borderRadius: 15,
+                                            marginBottom: '5%',
+                                            padding: 12,
+                                            flexWrap: 'wrap'
+                                        }}
+                                    >
+                                        <Options
+                                            text={option}
+                                            index={i}
+                                            currentCardIndex={index}
+                                            isCorrect={correctOption}
+                                            handleCorrect={(num) => setIndex(num)}
+                                        />
+                                    </TouchableWithoutFeedback>
                                 ))}</View> : <View></View>
                     }
                     <TouchableOpacity
@@ -194,7 +198,14 @@ export default function Learning() {
     }, [])
     useEffect(() => {
         if (moduleCards) {
-            setCurrentCard(moduleCards[`card${index}`])
+
+            // console.log(index,moduleCards.length)
+            // if(index==moduleCards.length-1){
+            //     navigation.navigate("Homepage")
+            // }else{
+            //     console.log("here")
+                setCurrentCard(moduleCards[`card${index}`])
+            // }
         }
     }, [moduleCards, index])
     // const [fontsLoaded] = useFonts({

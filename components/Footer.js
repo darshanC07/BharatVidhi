@@ -97,10 +97,7 @@ let styles = StyleSheet.create({
     },
     onClickStyle: {
         bottom: 15,
-        borderBottomLeftRadius: '50%',
-        borderBottomRightRadius: '50%',
-        borderTopLeftRadius: '50%',
-        borderTopRightRadius: '50%',
+        borderRadius: 50, // Fixed invalid percentage value
         backgroundColor: '#FFEEDD',
     },
     imageSize: {

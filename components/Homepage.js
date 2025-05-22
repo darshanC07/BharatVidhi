@@ -8,17 +8,20 @@ import {
   ScrollView,
   Button,
   Platform,
+  Dimensions,
   StatusBar,
   TouchableWithoutFeedback
-  , ImageBackground, useFonts,TouchableOpacity
+  , ImageBackground,TouchableOpacity
 } from "react-native";
 import Footer from "./Footer";
+// import { StyleSheet, Text, View, Image, ScrollView, Platform, StatusBar, ImageBackground, TouchableOpacity, Dimensions} from 'react-native';
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useEffect, useState } from "react";
-import * as ScreenOrientation from 'expo-screen-orientation';
-import DragNDrop from "../screens/DragNDrop";
-// import { TouchableWithoutFeedback } from "react-native-gesture-handler";
+import { Itim_400Regular } from "@expo-google-fonts/itim";
+import { useFonts, PatrickHandSC_400Regular } from '@expo-google-fonts/patrick-hand-sc';
+// import { useNavigation, useFocusEffect } from "@react-navigation/native";
+
 
 export default function Homepage() {
   // const [fontsLoaded] = useFonts({
@@ -160,17 +163,25 @@ export default function Homepage() {
           }}
           showsVerticalScrollIndicator={false}
         >
+          <TouchableWithoutFeedback onPress={() => {
+            navigation.navigate("Fundamental")
+          }
+          }>
           <ImageBackground source={require('../assets/fundamentals.png')} style={{
             resizeMode: 'cover',
             height: 120,
             marginBottom: 10,
             justifyContent: 'center'
-          }}><Text style={{
+          }}>
+            <TouchableWithoutFeedback onPress={() => {
+              navigation.navigate("Rights")
+            }
+            }><Text style={{
             textAlign: 'center',
             fontSize: 18,
             fontWeight: '800',
             color: 'white'
-          }}>FUNDAMENTALS</Text></ImageBackground>
+          }}>FUNDAMENTALS</Text></TouchableWithoutFeedback></ImageBackground></TouchableWithoutFeedback>
 
           <TouchableWithoutFeedback onPress={() => {
             navigation.navigate("Rights")
@@ -184,7 +195,6 @@ export default function Homepage() {
               justifyContent: 'center'
             }}><TouchableWithoutFeedback onPress={() => {
               navigation.navigate("Rights")
-
             }
             }><Text style={{
               textAlign: 'center',
@@ -259,11 +269,8 @@ export default function Homepage() {
 }
 
 const styles = StyleSheet.create({
-  container: {},
-  owl: {
-    // position:'relative',
-    top: 40,
-    height: 80,
-    width: 80,
-  },
+    container: {
+        backgroundColor: 'white',
+        flex : 1
+    },
 });

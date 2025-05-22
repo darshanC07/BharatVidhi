@@ -13,9 +13,9 @@ export default function App() {
   return (
     <SafeAreaView >
       {/* <StatusBar hidden /> */}
-        <View style={{backgroundColor:'rgba(253,177,55,0.2)',marginTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,height:Dimensions.get('window').height+10}}>
+        <View style={{backgroundColor:'rgba(253,177,55,0.2)',height:Dimensions.get('window').height+20}}>
             <ImageBackground source={require('../assets/Group 201.png')} style={{width:430,height:164}}>
-                <Text style={{fontFamily:'Astloch_400Regular',fontSize:52,alignSelf:'center',top:"50%"}}>
+                <Text style={{fontFamily:'Astloch_400Regular',fontSize:45,alignSelf:'center',top:"50%"}}>
                     Welcome
                 </Text>
             </ImageBackground>

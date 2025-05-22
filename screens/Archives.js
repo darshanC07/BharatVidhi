@@ -15,6 +15,7 @@ import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { db } from "../firebaseSetup";
 import { ref, onValue } from "firebase/database";
+import AshokaChakraLoader from "./Preloader";
 
 const ProductCard = ({
   name,
@@ -115,9 +116,7 @@ export default function Archives({ navigation }) {
 
   if (loading) {
     return (
-      <View style={styles.loaderContainer}>
-        <ActivityIndicator size="large" color="#0000ff" />
-      </View>
+        <AshokaChakraLoader />
     );
   }
 

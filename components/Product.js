@@ -11,6 +11,7 @@ import Footer from "../components/Footer";
 import { useNavigation } from "@react-navigation/native";
 import { useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import AshokaChakraLoader from "../screens/Preloader"; 
 const ProductDisplay = ({
   name,
   description,

@@ -18,7 +18,8 @@ import { Itim_400Regular } from "@expo-google-fonts/itim";
 import { Iceland_400Regular } from "@expo-google-fonts/iceland";
 import React, { useState, useEffect } from "react";
 import { db } from "../firebaseSetup"; // Import Firebase instance
-import { ref, onValue } from "firebase/database"; // Firebase methods for real-time updates
+import { ref, onValue } from "firebase/database";
+import AshokaChakraLoader from "./Preloader"; // Firebase methods for real-time updates
 
 const Glossary = ({ word, meaning }) => {
   return (
@@ -85,9 +86,7 @@ export default function Gloss() {
 
   if (loading) {
     return (
-      <SafeAreaView>
-        <ActivityIndicator size="large" color="#0000ff" />
-      </SafeAreaView>
+      <AshokaChakraLoader/>
     );
   }
 

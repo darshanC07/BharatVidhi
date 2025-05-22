@@ -22,7 +22,7 @@ export default function App() {
     else if (password !== confirmPassword) {
       Alert.alert("Incorrect Password", "Please re-enter your password")
     } else {
-      response = await fetch("https://9tj0pwqw-5000.inc1.devtunnels.ms/signup", {
+      response = await fetch("https://bharatvidhi.onrender.com/signup", {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

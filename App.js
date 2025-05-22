@@ -16,9 +16,15 @@ import Card from './components/Card';
 import DragNDrop from './screens/DragNDrop';
 import Learning from './screens/Learning';
 import Gloss from './screens/Glossary';
+import Fundamentals from './screens/Fundamentals';
 import Welcome from "./screens/Welcome"
 import Welcome2 from "./screens/Welcome2"
 import LogoPage from "./screens/LogoPage"
+import { LogBox } from "react-native";
+
+// Ignore all logs
+LogBox.ignoreAllLogs();
+
 // import NotificationScreen from './screens/NotificationScreen';
 // import Login from './Login'
 
@@ -44,6 +50,7 @@ export default function App() {
         <Stack.Screen name="Product" component={Product} options={{headerShown : false}}/>
         <Stack.Screen name="Property" component={Property} options={{headerShown : false}}/>
         <Stack.Screen name="Rights" component={Rights} options={{headerShown : false}}/>
+        <Stack.Screen name="Fundamental" component={Fundamentals} options={{headerShown : false}}/>
         <Stack.Screen name="Commercial" component={Commercial} options={{headerShown : false}}/>
         <Stack.Screen name="Profile" component={Profile} options={{headerShown : false}}/>
         <Stack.Screen name="Learning" component={Learning} options={{headerShown : false}}/>

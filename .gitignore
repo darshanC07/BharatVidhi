@@ -34,3 +34,7 @@ yarn-error.*
 
 # typescript
 *.tsbuildinfo
+
+#zip files
+backend.zip
+bharatvidhi.zip

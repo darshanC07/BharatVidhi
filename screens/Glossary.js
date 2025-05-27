@@ -8,6 +8,7 @@ import {
   ScrollView,
   SafeAreaView,
   ActivityIndicator,
+  TextInput,
 } from "react-native";
 import Footer from "../components/Footer";
 import {
@@ -17,9 +18,9 @@ import {
 import { Itim_400Regular } from "@expo-google-fonts/itim";
 import { Iceland_400Regular } from "@expo-google-fonts/iceland";
 import React, { useState, useEffect } from "react";
-import { db } from "../firebaseSetup"; // Import Firebase instance
+import { db } from "../firebaseSetup";
 import { ref, onValue } from "firebase/database";
-import AshokaChakraLoader from "./Preloader"; // Firebase methods for real-time updates
+import AshokaChakraLoader from "./Preloader";
 
 const Glossary = ({ word, meaning }) => {
   return (
@@ -66,11 +67,11 @@ export default function Gloss() {
   });
   const [glossaryData, setGlossaryData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    const glossaryRef = ref(db, "glossary"); // Reference to your Firebase Realtime Database node
+    const glossaryRef = ref(db, "glossary");
 
-    // Listen for data changes in real-time
     onValue(glossaryRef, (snapshot) => {
       if (snapshot.exists()) {
         setGlossaryData(snapshot.val());
@@ -78,16 +79,24 @@ export default function Gloss() {
         setGlossaryData({});
       }
       setLoading(false);
-      console.log(glossaryData);
     });
-
-    // No need to return a cleanup function because `onValue` manages subscriptions automatically
   }, []);
 
+  // Filter glossary data based on search query
+  const filteredGlossary = glossaryData
+    ? Object.entries(glossaryData).reduce((acc, [letter, words]) => {
+        const filteredWords = words.filter((item) =>
+          item.word.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+        if (filteredWords.length > 0) {
+          acc[letter] = filteredWords;
+        }
+        return acc;
+      }, {})
+    : {};
+
   if (loading) {
-    return (
-      <AshokaChakraLoader/>
-    );
+    return <AshokaChakraLoader />;
   }
 
   return (
@@ -134,9 +143,18 @@ export default function Gloss() {
         GLOSSARY
       </Text>
 
+      <View style={styles.searchContainer}>
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search glossary..."
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+        />
+      </View>
+
       <ScrollView style={styles.scroll}>
-        {glossaryData &&
-          Object.entries(glossaryData).map(([letter, words]) => (
+        {Object.keys(filteredGlossary).length > 0 ? (
+          Object.entries(filteredGlossary).map(([letter, words]) => (
             <View key={letter}>
               <Text style={styles.scroll_text}>{letter}</Text>
               <View style={styles.scroll_view} />
@@ -148,7 +166,10 @@ export default function Gloss() {
                 />
               ))}
             </View>
-          ))}
+          ))
+        ) : (
+          <Text style={styles.noResults}>No results found</Text>
+        )}
       </ScrollView>
 
       <Footer />
@@ -204,7 +225,6 @@ const styles = StyleSheet.create({
     height: 100,
     width: 100,
     backgroundColor: "#FFEEDD",
-
     borderRadius: 10,
   },
   info: {
@@ -221,7 +241,27 @@ const styles = StyleSheet.create({
   bg: {
     borderRadius: 15,
     height: 2000,
-
     width: "100%",
+  },
+  searchContainer: {
+    paddingHorizontal: 20,
+    marginBottom: 10,
+  },
+  searchInput: {
+    height: 40,
+    borderColor: "#ccc",
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    fontFamily: "Itim_400Regular",
+    fontSize: 16,
+    backgroundColor: "#fff",
+  },
+  noResults: {
+    textAlign: "center",
+    fontSize: 18,
+    fontFamily: "Itim_400Regular",
+    color: "#666",
+    marginTop: 20,
   },
 });

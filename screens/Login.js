@@ -47,7 +47,7 @@ export default function Login() {
 
     try {
       const response = await fetch(
-        "https://bharatvidhi.onrender.com/login",
+        "https://symmetrical-space-winner-gwgvj4wx5v7fw65x-5000.app.github.dev/login",
         {
           method: "POST",
           headers: {
@@ -89,7 +89,7 @@ export default function Login() {
     console.log("password", password)
     console.log("here")
     let response = await fetch(
-      "https://9tj0pwqw-5000.inc1.devtunnels.ms/login",
+      "https://symmetrical-space-winner-gwgvj4wx5v7fw65x-5000.app.github.dev/login",
       {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },

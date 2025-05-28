@@ -13,7 +13,7 @@ import {
   TouchableWithoutFeedback
   , ImageBackground,TouchableOpacity
 } from "react-native";
-import Footer from "./Footer";
+import Footer from "../components/Footer";
 // import { StyleSheet, Text, View, Image, ScrollView, Platform, StatusBar, ImageBackground, TouchableOpacity, Dimensions} from 'react-native';
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -21,9 +21,11 @@ import React, { useEffect, useState } from "react";
 import { Itim_400Regular } from "@expo-google-fonts/itim";
 import { useFonts, PatrickHandSC_400Regular } from '@expo-google-fonts/patrick-hand-sc';
 // import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import NotificationListener from '../components/NotificationListener'; 
 
 
 export default function Homepage() {
+  NotificationListener();
   // const [fontsLoaded] = useFonts({
   //             PatrickHandSC_400Regular,
   //             Itim_400Regular,

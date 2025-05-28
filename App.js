@@ -2,7 +2,7 @@
 import { StyleSheet, Text, SafeAreaView, View, Alert, Image, ScrollView, Button, Platform, StatusBar } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Homepage from './components/Homepage';
+import Homepage from './screens/Homepage';
 import Login from './screens/Login';
 import SignUp from './screens/SignUp';
 import CivicMastery from './screens/CivicMastery';
@@ -66,5 +66,4 @@ export default function App() {
     // <Card height={500} width={300} eHeight={250} eWidth={200}></Card>
   );
 }
-
 
